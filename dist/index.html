@@ -1956,7 +1956,7 @@
   let flatItems = [];
 
   const $ = sel => document.querySelector(sel);
-  const $ = sel => Array.from(document.querySelectorAll(sel));
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
 
   // Handle Apps Script Webapp URL Configuration
   let gasApiUrl = '';
@@ -2179,7 +2179,7 @@
       localStorage.setItem(ONBOARD_KEY, '1');
       closeGuide();
     });
-    $('[data-close-modal]').forEach(b => b.addEventListener('click', closeGuide));
+    $$('[data-close-modal]').forEach(b => b.addEventListener('click', closeGuide));
     $('#guideModal').addEventListener('click', e => { if (e.target.id === 'guideModal') closeGuide(); });
 
     // Print, JSON Import/Export
@@ -2205,7 +2205,7 @@
     $('#saveSigBtn').addEventListener('click', saveSignatures);
 
     // Radio option switches
-    $('input[name="saveMode"]').forEach(r => r.addEventListener('change', () => {
+    $$('input[name="saveMode"]').forEach(r => r.addEventListener('change', () => {
       pending = {};
       renderChecklist();
       toast('Đã chuyển chế độ lưu trữ.', 'success');
@@ -2215,10 +2215,10 @@
     $('#reportBtn').addEventListener('click', openReportModal);
     $('#refreshReportBtn').addEventListener('click', renderReportPreview);
     $('#downloadReportBtn').addEventListener('click', downloadReportImage);
-    $('[data-close-report-modal]').forEach(b => b.addEventListener('click', closeReportModal));
+    $$('[data-close-report-modal]').forEach(b => b.addEventListener('click', closeReportModal));
     $('#reportModal').addEventListener('click', e => { if (e.target.id === 'reportModal') closeReportModal(); });
     
-    $('input[name="reportMode"], input[name="reportScope"]').forEach(r => r.addEventListener('change', renderReportPreview));
+    $$('input[name="reportMode"], input[name="reportScope"]').forEach(r => r.addEventListener('change', renderReportPreview));
     ['#reportShowSubtasks', '#reportIncludeSupply', '#reportIncludeSignatures', '#reportIncludeEmptyGroups'].forEach(sel => {
       $(sel).addEventListener('change', renderReportPreview);
     });
@@ -2374,7 +2374,7 @@
       </article>`;
     }).join('');
 
-    $('.area-card').forEach(card => card.addEventListener('click', () => {
+    $$('.area-card').forEach(card => card.addEventListener('click', () => {
       if (Object.keys(pending).length && !confirm('Bạn có thay đổi chưa đồng bộ. Vẫn muốn chuyển khu?')) return;
       selectedArea = card.dataset.area;
       if (session.name) {
@@ -2415,7 +2415,7 @@
       { key: 'XUỐNG CA SAU CÙNG', label: 'Xuống ca cuối' }
     ];
     $('#phaseTabs').innerHTML = tabs.map(t => `<button class="tab ${activePhase === t.key ? 'active' : ''}" data-tab="${t.key}">${t.label}</button>`).join('');
-    $('.tab').forEach(tab => tab.addEventListener('click', () => {
+    $$('.tab').forEach(tab => tab.addEventListener('click', () => {
       activePhase = tab.dataset.tab;
       renderChecklist();
     }));
@@ -2495,13 +2495,13 @@
     $('#taskTableBody').innerHTML = html;
     
     // Register actions
-    $('input[data-item-id]').forEach(cb => cb.addEventListener('change', onItemToggle));
-    $('input[data-sub-id]').forEach(cb => cb.addEventListener('change', onSubItemToggle));
-    $('[data-save-note]').forEach(btn => btn.addEventListener('click', () => saveNote(btn.dataset.saveNote)));
+    $$('input[data-item-id]').forEach(cb => cb.addEventListener('change', onItemToggle));
+    $$('input[data-sub-id]').forEach(cb => cb.addEventListener('change', onSubItemToggle));
+    $$('[data-save-note]').forEach(btn => btn.addEventListener('click', () => saveNote(btn.dataset.saveNote)));
   }
 
   function getNoteValue(id) {
-    const el = $('[data-note-id]').find(n => n.dataset.noteId === id);
+    const el = $$('[data-note-id]').find(n => n.dataset.noteId === id);
     return el ? el.value.trim() : '';
   }
 
@@ -2653,7 +2653,7 @@
     $('#supplyArea').textContent = selectedArea || '____';
     $('#supplyDate').textContent = formatDateVN(currentDate());
     const supply = selectedArea ? (getAreaData(selectedArea).supply || {}) : {};
-    $('[data-supply]').forEach(cb => cb.checked = !!supply[cb.dataset.supply]);
+    $$('[data-supply]').forEach(cb => cb.checked = !!supply[cb.dataset.supply]);
     $('#supplyNote').value = supply.note || '';
     
     $('#supplyMeta').textContent = supply.savedAt 
@@ -2674,7 +2674,7 @@
       by: session.name,
       savedAt: new Date().toISOString()
     };
-    $('[data-supply]').forEach(cb => supply[cb.dataset.supply] = cb.checked);
+    $$('[data-supply]').forEach(cb => supply[cb.dataset.supply] = cb.checked);
     
     getAreaData().supply = supply;
     saveDB();

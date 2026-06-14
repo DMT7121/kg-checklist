@@ -14,9 +14,9 @@ function build() {
     const stylesHtml = fs.readFileSync('Styles.html', 'utf8');
     const scriptsHtml = fs.readFileSync('Scripts.html', 'utf8');
 
-    // Replace Apps Script template include tags with actual content
-    indexHtml = indexHtml.replace(/<\?!= include\(['"]Styles['"]\);\s*\?>/g, stylesHtml);
-    indexHtml = indexHtml.replace(/<\?!= include\(['"]Scripts['"]\);\s*\?>/g, scriptsHtml);
+    // Replace Apps Script template include tags with actual content (using functions to avoid $$ regex replace pattern issues)
+    indexHtml = indexHtml.replace(/<\?!= include\(['"]Styles['"]\);\s*\?>/g, () => stylesHtml);
+    indexHtml = indexHtml.replace(/<\?!= include\(['"]Scripts['"]\);\s*\?>/g, () => scriptsHtml);
 
     // Save to dist/index.html
     fs.writeFileSync(path.join('dist', 'index.html'), indexHtml, 'utf8');
