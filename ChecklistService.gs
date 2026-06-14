@@ -451,6 +451,16 @@ var ChecklistService = (function() {
    * and writing a formatted tracking summary to the monthly calendar sheet.
    */
   function saveChecklistState(dateStr, area, participants, items, supply, signatures) {
+    // Robust parameter fallbacks for manual execution from the Apps Script IDE or missing parameters
+    if (!dateStr) {
+      dateStr = Utilities.formatDate(new Date(), "GMT+7", "yyyy-MM-dd");
+    }
+    if (!area) area = "A";
+    if (!participants) participants = [];
+    if (!items) items = {};
+    if (!supply) supply = {};
+    if (!signatures) signatures = {};
+
     // 1. Save state to raw logs (02_LUU_TRU_TIEN_DO)
     var stateSheet = SheetService.getOrCreateSheet(STATE_SHEET, STATE_HEADERS);
     var stateRows = SheetService.getSheetDataAsObjects(STATE_SHEET);
