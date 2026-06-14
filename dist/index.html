@@ -1,0 +1,3160 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>King's Grill - Checklist Vận Hành Hàng Ngày</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #f5f8fc;
+    --panel: rgba(255, 255, 255, 0.85);
+    --panel-border: rgba(226, 232, 240, 0.8);
+    --ink: #0f172a;
+    --muted: #475569;
+    --line: #e2e8f0;
+    
+    --blue-base: 210;
+    --blue: hsl(var(--blue-base), 80%, 25%);
+    --blue-2: hsl(var(--blue-base), 85%, 38%);
+    --blue-3: hsl(var(--blue-base), 85%, 95%);
+    --blue-glow: hsla(var(--blue-base), 85%, 38%, 0.15);
+    
+    --green: #10b981;
+    --green-light: #ecfdf5;
+    --green-border: #a7f3d0;
+    --green-text: #047857;
+    
+    --amber: #f59e0b;
+    --amber-light: #fffbeb;
+    --amber-border: #fde68a;
+    --amber-text: #b45309;
+    
+    --red: #ef4444;
+    --red-light: #fef2f2;
+    --red-border: #fca5a5;
+    --red-text: #b91c1c;
+
+    --shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08);
+    --shadow-hover: 0 30px 60px -15px rgba(15, 23, 42, 0.15);
+    --shadow-glow: 0 0 25px rgba(15, 95, 156, 0.25);
+    --radius: 24px;
+    --radius-sm: 12px;
+    --radius-md: 16px;
+  }
+
+  * { box-sizing: border-box; }
+  
+  html, body {
+    margin: 0;
+    min-height: 100%;
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+  }
+
+  body {
+    background: 
+      radial-gradient(circle at 10% 20%, rgba(15, 95, 156, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+      linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
+    background-attachment: fixed;
+    padding-bottom: 60px;
+  }
+
+  button, input, select, textarea { font: inherit; }
+  button { cursor: pointer; border: none; background: none; }
+
+  /* Main Container */
+  .app {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 30px 24px;
+  }
+
+  /* Top Bar Branding */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-2));
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    box-shadow: 0 12px 28px rgba(15, 95, 156, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.15) 50%, transparent 55%);
+    transform: rotate(30deg);
+    animation: shine 4s infinite linear;
+  }
+
+  @keyframes shine {
+    0% { transform: translate(-30%, -30%) rotate(30deg); }
+    100% { transform: translate(30%, 30%) rotate(30deg); }
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(22px, 2.5vw, 32px);
+    line-height: 1.15;
+    margin: 0;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* Premium Buttons */
+  .btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn.primary {
+    background: linear-gradient(135deg, var(--blue), var(--blue-2));
+    color: #fff;
+    border: none;
+    box-shadow: 0 10px 20px -8px rgba(15, 95, 156, 0.4);
+  }
+
+  .btn.primary:hover {
+    box-shadow: 0 15px 24px -6px rgba(15, 95, 156, 0.5);
+  }
+
+  .btn.good {
+    background: var(--green-light);
+    color: var(--green-text);
+    border-color: var(--green-border);
+  }
+  .btn.good:hover {
+    background: #d1fae5;
+  }
+
+  .btn.warn {
+    background: var(--amber-light);
+    color: var(--amber-text);
+    border-color: var(--amber-border);
+  }
+  .btn.warn:hover {
+    background: #fef3c7;
+  }
+
+  .btn.danger {
+    background: var(--red-light);
+    color: var(--red-text);
+    border-color: var(--red-border);
+  }
+  .btn.danger:hover {
+    background: #fee2e2;
+  }
+
+  .btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Glassmorphism Panel */
+  .panel {
+    background: var(--panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+  }
+
+  .panel:hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* Control Panel Section */
+  .control-panel {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 24px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-weight: 800;
+    color: var(--muted);
+    margin: 0 0 8px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .input, .select, .textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    outline: none;
+    color: var(--ink);
+    font-size: 15px;
+    transition: all 0.2s ease;
+  }
+
+  .input:focus, .select:focus, .textarea:focus {
+    border-color: var(--blue-2);
+    box-shadow: 0 0 0 4px var(--blue-glow);
+  }
+
+  .textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .hint {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .control-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  /* Mode selection grid */
+  .mode-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    justify-content: center;
+  }
+
+  .mode-card {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #fff;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mode-card:hover {
+    border-color: var(--blue-2);
+    background: var(--blue-3);
+  }
+
+  .mode-card input {
+    margin-top: 4px;
+    transform: scale(1.25);
+    accent-color: var(--blue-2);
+  }
+
+  .mode-title {
+    display: block;
+    font-weight: 800;
+    color: var(--blue);
+    font-size: 15px;
+  }
+
+  .mode-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.4;
+    display: block;
+  }
+
+  /* Interactive Area/Zone Board */
+  .area-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .area-card {
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--panel-border);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .area-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .area-card.active {
+    background: linear-gradient(135deg, #092c4f 0%, var(--blue-2) 100%);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .area-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: var(--blue-2);
+    transition: all 0.3s ease;
+  }
+
+  .area-card.active::before {
+    width: 8px;
+    background: var(--amber);
+    box-shadow: 0 0 15px var(--amber);
+  }
+
+  .area-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .area-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .area-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    color: var(--blue);
+    font-weight: 800;
+  }
+  .area-card.active .area-title { color: #fff; }
+
+  .area-selected-badge {
+    display: none;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .area-card.active .area-selected-badge { display: inline-flex; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 99px;
+    background: var(--blue-3);
+    color: var(--blue-2);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .area-card.active .pill {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Animated Progress Line */
+  .progress-line {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+  .progress-line span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), #34d399);
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .area-card.active .progress-line { background: rgba(255, 255, 255, 0.2); }
+  .area-card.active .progress-line span { background: linear-gradient(90deg, #fff, #a7f3d0); }
+
+  .area-card .hint { margin-bottom: 12px; }
+  .area-card.active .hint { color: rgba(255, 255, 255, 0.85); }
+  .area-card.active .empty { color: rgba(255, 255, 255, 0.65); }
+
+  .staff-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+    border-top: 1px dashed rgba(15, 23, 42, 0.08);
+    padding-top: 12px;
+  }
+  .area-card.active .staff-list { border-top-color: rgba(255, 255, 255, 0.15); }
+
+  .staff-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .area-card.active .staff-chip {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  .staff-chip small { color: var(--muted); }
+  .area-card.active .staff-chip small { color: rgba(255, 255, 255, 0.7); }
+
+  .empty {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  /* Two Column Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .checklist-card {
+    overflow: hidden;
+  }
+
+  /* Filter Tabs */
+  .section-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 20px 20px 0;
+    border-bottom: 1px solid var(--line);
+    background: rgba(248, 250, 252, 0.4);
+  }
+
+  .tab {
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: #fff;
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 13px;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .tab:hover {
+    border-color: var(--blue-2);
+    color: var(--blue-2);
+  }
+
+  .tab.active {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 4px 12px var(--blue-glow);
+  }
+
+  /* Summary metric strip */
+  .summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px 20px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .metric {
+    border: 1px solid #f1f5f9;
+    border-radius: var(--radius-md);
+    background: #f8fafc;
+    padding: 12px;
+    text-align: center;
+  }
+  .metric b {
+    display: block;
+    color: var(--blue-2);
+    font-size: 22px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+  }
+  .metric span {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* Sync alert banner */
+  .pending-banner {
+    display: none;
+    margin: 16px 20px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    color: var(--amber-text);
+    font-weight: 700;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    animation: pulseBorder 2s infinite ease-in-out;
+  }
+  .pending-banner.show { display: flex; }
+
+  @keyframes pulseBorder {
+    0%, 100% { border-color: #fde68a; box-shadow: 0 0 0 rgba(245, 158, 11, 0); }
+    50% { border-color: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.15); }
+  }
+
+  /* Custom checklist tables */
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .check-table th {
+    background: linear-gradient(135deg, var(--blue) 0%, #082848 100%);
+    color: #fff;
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  .check-table td {
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    vertical-align: top;
+    background: #fff;
+    padding: 16px;
+    transition: background 0.2s ease;
+  }
+  .check-table td:last-child { border-right: none; }
+  .check-table tr:hover td { background: #fafcff; }
+
+  /* Section Header Row */
+  .group-row td {
+    background: #f0f6fc !important;
+    color: var(--blue);
+    font-weight: 850;
+    padding: 12px 16px;
+    border-top: 2px solid var(--blue-2);
+    border-bottom: 2px solid var(--blue-2);
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .phase-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 99px;
+    background: #fff;
+    color: var(--blue-2);
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    margin-right: 8px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  .stt {
+    width: 58px;
+    text-align: center;
+    font-weight: 900;
+    color: var(--blue-2);
+    background: #f8fafc !important;
+  }
+
+  /* Checklist item text */
+  .task-cell { padding: 16px; }
+  .task-title {
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .task-text {
+    line-height: 1.5;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  
+  .task-meta {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .done-meta {
+    color: var(--green-text);
+    font-weight: 800;
+    background: var(--green-light);
+    border: 1px solid var(--green-border);
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+
+  /* Checklist checkboxes */
+  .check-cell {
+    width: 112px;
+    text-align: center;
+    background: #f8fafc !important;
+    cursor: pointer;
+    vertical-align: middle !important;
+  }
+
+  .checkbox {
+    width: 26px;
+    height: 26px;
+    accent-color: var(--green);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+  .checkbox:hover { transform: scale(1.1); }
+
+  /* Note section cells */
+  .note-cell {
+    width: 220px;
+    background: #f8fafc !important;
+  }
+  .row-note {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    min-height: 54px;
+    font-size: 13px;
+    resize: vertical;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .row-note:focus {
+    border-color: var(--blue-2);
+    background: #fff;
+  }
+
+  .tiny-btn {
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--blue-2);
+    margin-top: 6px;
+    transition: all 0.15s ease;
+  }
+  .tiny-btn:hover {
+    border-color: var(--blue-2);
+    background: var(--blue-3);
+  }
+
+  /* Subtasks lists nesting */
+  .subtask-panel {
+    margin-top: 14px;
+    border: 1px solid #e2e8f0;
+    background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  }
+
+  .subtask-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .subtask-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--green-light);
+    color: var(--green-text);
+    border: 1px solid var(--green-border);
+    border-radius: 99px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 850;
+    text-transform: none;
+  }
+
+  .subtask-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .subtask-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    line-height: 1.35;
+    font-size: 13px;
+    color: #334155;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .subtask-item:hover {
+    border-color: var(--blue-2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+  }
+
+  .subtask-checkbox {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    accent-color: var(--green);
+    cursor: pointer;
+    margin-top: 1px;
+  }
+
+  .auto-complete-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--green-light);
+    color: var(--green-text);
+    border: 1px solid var(--green-border);
+    border-radius: 99px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+
+  /* Right Sidebar */
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 24px;
+  }
+
+  .side h2 {
+    margin: 0 0 14px;
+    color: var(--blue);
+    font-size: 18px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 10px;
+  }
+
+  .guide, .supply, .signature {
+    padding: 20px;
+  }
+
+  .guide-block {
+    border-left: 4px solid var(--blue-2);
+    padding: 4px 0 4px 12px;
+    margin: 14px 0;
+  }
+  .guide-block b { color: var(--blue); }
+  .guide ul { margin: 6px 0 0 16px; padding: 0; }
+  .guide li { margin: 6px 0; color: var(--muted); line-height: 1.4; font-size: 13px; }
+
+  /* Supply sidebar */
+  .supply {
+    background: linear-gradient(180deg, #fff 0%, #fbfcfe 100%);
+  }
+  .supply-date {
+    font-weight: 800;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+  .supply-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .supply-list label, .supply-wide label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: #334155;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .supply-list input, .supply-wide input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+  
+  .supply-wide {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-top: 1px dashed var(--line);
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+  
+  .supply-sub {
+    margin-left: 26px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .supply-sub label { font-size: 12px; font-weight: 600; }
+
+  /* Signatures section */
+  .sig-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sig-box {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    background: #f8fafc;
+  }
+  .sig-box label {
+    font-weight: 800;
+    color: var(--blue-2);
+    font-size: 12px;
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Placeholders */
+  .join-placeholder {
+    padding: 60px 40px;
+    text-align: center;
+  }
+  .join-placeholder h2 {
+    color: var(--blue);
+    font-size: 26px;
+    font-family: 'Outfit', sans-serif;
+    margin: 0 0 12px;
+  }
+  .join-placeholder p {
+    color: var(--muted);
+    margin: 0 auto 24px;
+    max-width: 600px;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* Modals styling */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+
+  .modal {
+    width: min(850px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: 0 30px 100px rgba(15, 23, 42, 0.35);
+    border: 1px solid rgba(255,255,255,0.8);
+    animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes modalPop {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .modal-head {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .modal-head h2 {
+    margin: 0;
+    color: var(--blue);
+    font-size: 24px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+  }
+  
+  .close-x {
+    border: none;
+    background: #f1f5f9;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-weight: 800;
+    color: var(--muted);
+    transition: all 0.2s ease;
+  }
+  .close-x:hover {
+    background: #e2e8f0;
+    color: var(--ink);
+  }
+
+  .modal-body { padding: 28px; }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .step {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #f8fafc;
+  }
+  .step b {
+    display: block;
+    color: var(--blue-2);
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .step p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.5;
+    font-size: 13px;
+  }
+
+  /* Toasts */
+  .toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 110;
+    background: #1e293b;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    font-weight: 700;
+    font-size: 14px;
+    display: none;
+    max-width: 400px;
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: toastPop 0.2s ease;
+  }
+  .toast.show { display: block; }
+  
+  @keyframes toastPop {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Report Modal */
+  .report-modal .modal { width: min(1200px, 100%); }
+  .report-toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .report-options {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .report-box {
+    border: 1px solid var(--line);
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 18px;
+  }
+  .report-box h3 {
+    margin: 0 0 12px;
+    color: var(--blue);
+    font-size: 16px;
+    font-weight: 800;
+  }
+  
+  .report-option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .report-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 13px;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .report-option input { margin-top: 3px; accent-color: var(--blue-2); }
+  .report-option span b { color: var(--blue-2); font-weight: 800; }
+  .report-option:hover { border-color: var(--blue-2); }
+
+  .report-preview-wrap {
+    border: 2px dashed #cbd5e1;
+    background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+    border-radius: var(--radius);
+    padding: 24px;
+    min-height: 400px;
+  }
+  .report-preview-scroller {
+    overflow-x: auto;
+    max-height: 75vh;
+  }
+
+  /* PNG Export Layout Sheet */
+  .report-sheet {
+    width: 1040px;
+    max-width: 100%;
+    margin: 0 auto;
+    background: #f5f8fc;
+    border-radius: var(--radius);
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 20px 50px rgba(15,23,42,0.1);
+    overflow: hidden;
+    color: #0f172a;
+  }
+  
+  .report-header {
+    padding: 30px;
+    background: linear-gradient(135deg, #071f38 0%, var(--blue-2) 100%);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    position: relative;
+  }
+  .report-kicker {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .report-title {
+    margin: 8px 0;
+    font-size: 32px;
+    font-weight: 900;
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.15;
+  }
+  .report-subtitle {
+    margin: 0;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 680px;
+  }
+  
+  .report-badge-area {
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 16px 20px;
+    min-width: 180px;
+    text-align: center;
+  }
+  .report-badge-area b {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.8;
+  }
+  .report-badge-area span {
+    display: block;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-top: 6px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .report-meta-bar {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr;
+    gap: 16px;
+    padding: 20px 24px 0;
+  }
+
+  .report-staff, .report-meta-card, .report-section, .report-group, .report-footer {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+  }
+  .report-staff, .report-meta-card { padding: 16px; }
+  
+  .report-section {
+    padding: 20px;
+    margin: 16px 24px 0;
+  }
+  .report-section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--blue);
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .report-staff-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .report-staff-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 99px;
+    padding: 6px 12px;
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 13px;
+  }
+
+  .report-meta-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px 24px;
+  }
+  
+  .report-metric {
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .report-metric b {
+    display: block;
+    color: var(--blue);
+    font-size: 26px;
+    font-family: 'Outfit', sans-serif;
+    line-height: 1;
+  }
+  .report-metric span {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .report-group {
+    margin: 16px 24px 0;
+    padding: 18px;
+  }
+  .report-group-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #edf2f7;
+    margin-bottom: 14px;
+  }
+  .report-group-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: 'Outfit', sans-serif;
+  }
+  .report-group-sub {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  
+  .report-phase-pill, .report-count-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 99px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .report-phase-pill { background: #f1f5f9; color: var(--muted); border: 1px solid #cbd5e1; }
+  .report-count-pill { background: var(--green-light); color: var(--green-text); border: 1px solid var(--green-border); }
+
+  .report-item {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 14px;
+    margin-top: 12px;
+  }
+  .report-item.pending {
+    background: #fffbeb;
+    border-color: #fde68a;
+  }
+  
+  .report-item-head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .report-item-main {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    min-width: 0;
+  }
+  .report-item-no {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--blue-2);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .report-item.pending .report-item-no { background: var(--amber); }
+
+  .report-item-title { font-size: 15px; font-weight: 800; color: #1e293b; margin: 0 0 4px; }
+  .report-item-text { font-size: 13px; line-height: 1.45; color: var(--muted); }
+  
+  .report-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border-radius: 99px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .report-status.done { background: var(--green-light); color: var(--green-text); border: 1px solid var(--green-border); }
+  .report-status.pending { background: #fef3c7; color: var(--amber-text); border: 1px solid #fde68a; }
+
+  .report-item-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .report-note {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .report-subtasks {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .report-subtask {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    font-size: 12px;
+    color: #475569;
+    font-weight: 600;
+  }
+  .report-subtask .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    font-size: 10px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .report-subtask.done .dot { background: var(--green); color: #fff; }
+  .report-subtask.pending .dot { background: #fde68a; color: var(--amber-text); }
+
+  .report-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .report-footer {
+    margin: 20px 24px 24px;
+    padding: 16px;
+    background: #f8fafc;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .report-area-block {
+    margin: 16px 24px 0;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  
+  .report-area-block-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .report-area-block-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--blue);
+    font-family: 'Outfit', sans-serif;
+  }
+  .report-area-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px 20px;
+  }
+  .report-mini-metric {
+    border: 1px solid #f1f5f9;
+    border-radius: var(--radius-sm);
+    background: #f8fafc;
+    padding: 10px 14px;
+    text-align: center;
+  }
+  .report-mini-metric b {
+    display: block;
+    font-size: 22px;
+    color: var(--blue);
+    font-family: 'Outfit', sans-serif;
+  }
+  .report-mini-metric span {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .print-title { display: none; }
+  .hidden { display: none !important; }
+
+  /* Media Queries */
+  @media (max-width: 1200px) {
+    .layout { grid-template-columns: 1fr; }
+    .side { position: static; }
+    .area-board { grid-template-columns: repeat(2, 1fr); }
+    .control-panel { grid-template-columns: 1fr; }
+    .summary-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    .report-options, .report-meta-bar { grid-template-columns: 1fr; }
+    .report-option-grid, .report-meta-list, .report-subtasks, .report-area-grid { grid-template-columns: 1fr; }
+    .report-sheet { width: 100%; }
+    .report-header { flex-direction: column; }
+    .report-badge-area { width: 100%; min-width: 0; }
+    .report-item-head { flex-direction: column; gap: 8px; }
+  }
+
+  @media (max-width: 720px) {
+    .app { padding: 15px 12px; }
+    .topbar { flex-direction: column; align-items: stretch; }
+    .toolbar { justify-content: stretch; }
+    .toolbar .btn { flex-grow: 1; }
+    .area-board { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .control-actions { flex-direction: column; }
+    .control-actions .btn { width: 100%; }
+    .summary-strip { grid-template-columns: 1fr 1fr; }
+    .subtask-grid { grid-template-columns: 1fr; }
+    .supply-list { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .check-table { font-size: 13px; }
+    .note-cell { display: none; }
+    .section-tabs { overflow-x: auto; flex-wrap: nowrap; }
+    .tab { white-space: nowrap; }
+  }
+
+  /* Printable View Override */
+  @media print {
+    body { background: #fff; }
+    .app { max-width: none; padding: 0; }
+    .topbar, .control-panel, .area-board, .section-tabs, .toolbar, .pending-banner, .side .guide, .toast, .modal-backdrop, .tiny-btn { display: none !important; }
+    .layout { display: block; }
+    .side { position: static; }
+    .checklist-card, .panel { box-shadow: none; border: none; border-radius: 0; }
+    .summary-strip { padding: 10px; border: 1px solid #000; grid-template-columns: repeat(4, 1fr); margin-bottom: 20px; }
+    .print-title { display: block; text-align: center; font-size: 20px; font-weight: 800; color: #000; margin: 0 0 15px; }
+    .check-table th { background: #000 !important; color: #fff !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .group-row td { background: #f1f5f9 !important; color: #000 !important; border-top: 2px solid #000; border-bottom: 2px solid #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .supply, .signature { page-break-inside: avoid; box-shadow: none; border: 1px solid #000; margin-top: 15px; }
+    .note-cell { display: table-cell !important; }
+  }
+</style>
+
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">KG</div>
+        <div>
+          <h1>King's Grill - Bảng checklist công việc đầu ca - cuối ca</h1>
+          <div class="subtitle">Hệ thống đồng bộ dữ liệu Google Sheets trực tuyến · 4 khu A, B, C, D&amp;E · Tải báo cáo ảnh PNG</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="helpBtn">📘 Hướng dẫn</button>
+        <button class="btn" id="printBtn">🖨️ In checklist</button>
+        <button class="btn" id="exportBtn">⬇️ Xuất JSON</button>
+        <button class="btn" id="importBtn">⬆️ Nhập JSON</button>
+        <input type="file" id="importFileInput" accept="application/json" class="hidden" />
+        <button class="btn primary" id="reportBtn">🧾 Tạo báo cáo</button>
+        <button class="btn danger" id="resetSessionBtn">↺ Đổi nhân viên/khu</button>
+      </div>
+    </header>
+
+    <section class="panel control-panel">
+      <div>
+        <div class="field-row">
+          <div class="field">
+            <label>Họ tên đầy đủ nhân viên</label>
+            <input class="input" id="employeeName" placeholder="VD: Nguyễn Văn A" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label>Ngày checklist</label>
+            <input class="input" type="date" id="workDate" />
+          </div>
+        </div>
+        <div class="hint">Nhập họ tên, chọn khu trực và bấm “Tham gia checklist”. Nhiều nhân viên có thể cùng tham gia một khu trong ngày.</div>
+        <div class="control-actions">
+          <button class="btn primary" id="joinBtn">✅ Tham gia checklist khu đã chọn</button>
+          <button class="btn good" id="syncServerBtn">☁️ Gửi & Đồng bộ Google Sheets</button>
+        </div>
+      </div>
+      <div>
+        <div class="mode-grid">
+          <label class="mode-card">
+            <input type="radio" name="saveMode" value="single" />
+            <span>
+              <span class="mode-title">Lưu trực tuyến tức thì</span>
+              <span class="mode-desc">Mỗi lần tick hoặc sửa ghi chú sẽ lưu ngay lên Google Sheets. Thích hợp khi mạng ổn định.</span>
+            </span>
+          </label>
+          <label class="mode-card">
+            <input type="radio" name="saveMode" value="batch" checked />
+            <span>
+              <span class="mode-title">Chế độ Lưu hàng loạt</span>
+              <span class="mode-desc">Tick nhiều việc thoải mái, sau đó bấm nút "Gửi & Đồng bộ" để cập nhật lên Sheets một lần.</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Zone Completion Board -->
+    <section class="area-board" id="areaBoard"></section>
+
+    <section class="layout">
+      <main class="panel checklist-card" id="mainChecklist">
+        <div class="join-placeholder" id="joinPlaceholder">
+          <h2>Chọn khu và khai báo nhân viên để bắt đầu</h2>
+          <p>Hệ thống kết nối trực tiếp với Google Sheets. Hãy chọn khu A, B, C hoặc D&amp;E bên trên, nhập tên rồi bấm tham gia checklist.</p>
+          <button class="btn primary" id="quickGuideBtn">Xem hướng dẫn lần đầu</button>
+        </div>
+        <div id="checklistContent" class="hidden">
+          <p class="print-title" id="printTitle"></p>
+          <div class="section-tabs" id="phaseTabs"></div>
+          
+          <div class="summary-strip" id="summaryStrip"></div>
+          
+          <div class="pending-banner" id="pendingBanner">
+            <span id="pendingText">Có thay đổi chưa được lưu lên Google Sheets.</span>
+            <button class="btn warn" id="savePendingBtn">☁️ Đồng bộ lên Google Sheets ngay</button>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="check-table">
+              <thead>
+                <tr>
+                  <th style="width:58px;text-align:center">STT</th>
+                  <th>Hạng mục công việc</th>
+                  <th style="width:112px;text-align:center">Hoàn thành</th>
+                  <th style="width:220px">Ghi chú nội bộ</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <aside class="side">
+        <!-- Operational Guidelines -->
+        <section class="panel guide">
+          <h2>Ghi chú vận hành</h2>
+          <div class="guide-block"><b>Đầu ca (15h &amp; 17h):</b>
+            <ul>
+              <li>Vệ sinh khu vực chung, setup bàn ghế đúng tiêu chuẩn và lịch đặt bàn.</li>
+              <li>Kiểm tra thông tin bàn đặt, món hết/ngừng bán, ưu tiên bán và khuyến mãi.</li>
+              <li>Tick checklist nhỏ để tự động hoàn thành hạng mục tổng.</li>
+            </ul>
+          </div>
+          <div class="guide-block"><b>Cuối ca (Xuống ca 1 &amp; Xuống ca cuối):</b>
+            <ul>
+              <li>Nhóm ca 1 hỗ trợ dọn dẹp, lau bàn ghế, chuẩn bị vật tư cho ca sau.</li>
+              <li>Nhóm kết ca vệ sinh menu, xô đá, quạt, đổ rác và vệ sinh WC.</li>
+              <li>Quay video/chụp ảnh bàn giao, gửi báo cáo và chấm công ra về.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Supplies Request Form -->
+        <section class="panel supply">
+          <h2>Cấp vật tư cho khu <span id="supplyArea">____</span></h2>
+          <div class="supply-date">Ngày <span id="supplyDate">__/__/20__</span></div>
+          <div class="supply-list">
+            <label><input type="checkbox" data-supply="du_dung"> Đủ dùng</label>
+            <label><input type="checkbox" data-supply="khan_giay"> Khăn giấy</label>
+            <label><input type="checkbox" data-supply="ong_hut"> Ống hút</label>
+            <label><input type="checkbox" data-supply="diem"> Diêm</label>
+            <label><input type="checkbox" data-supply="tam"> Tăm</label>
+            <label><input type="checkbox" data-supply="xien_tre"> Xiên tre</label>
+            <label><input type="checkbox" data-supply="bao_tay"> Bao tay</label>
+          </div>
+          <div class="supply-wide">
+            <label><input type="checkbox" data-supply="bao_rac"> Bao rác</label>
+            <div class="supply-sub">
+              <label><input type="checkbox" data-supply="bao_rac_den"> Đen kín</label>
+              <label><input type="checkbox" data-supply="bao_rac_dai"> Đại</label>
+              <label><input type="checkbox" data-supply="bao_rac_trung"> Trung</label>
+              <label><input type="checkbox" data-supply="bao_rac_tieu"> Tiểu</label>
+            </div>
+            <label><input type="checkbox" data-supply="bich_mang_ve"> Bọc/bịch mang về</label>
+            <div class="supply-sub">
+              <label><input type="checkbox" data-supply="bich_lau"> Lẩu</label>
+              <label><input type="checkbox" data-supply="bich_3kg"> 3kg</label>
+              <label><input type="checkbox" data-supply="bich_5kg"> 5kg</label>
+            </div>
+            <label><input type="checkbox" data-supply="hop_mang_ve"> Hộp mang về</label>
+            <div class="supply-sub">
+              <label><input type="checkbox" data-supply="hop_xop"> Xốp</label>
+              <label><input type="checkbox" data-supply="hop_nhua"> Nhựa nắp rời</label>
+            </div>
+          </div>
+          <textarea class="textarea" id="supplyNote" placeholder="Ghi chú số lượng cần cấp thêm, tình trạng vật tư..."></textarea>
+          <div class="action-row">
+            <button class="btn good" id="saveSupplyBtn">💾 Lưu đề xuất vật tư</button>
+          </div>
+          <div class="hint" id="supplyMeta">Số lượng cấp vừa phải, đủ dùng trong ca. Nếu vẫn đủ dùng, chọn “Đủ dùng”.</div>
+        </section>
+
+        <!-- Signature Confirmation -->
+        <section class="panel signature">
+          <h2>Xác nhận bàn giao</h2>
+          <div class="sig-grid">
+            <div class="sig-box"><label>Phụ trách nhận ca</label><input class="input" id="sigReceive" placeholder="Ký tên / ghi rõ họ tên" /></div>
+            <div class="sig-box"><label>Phụ trách giao ca</label><input class="input" id="sigHandover" placeholder="Ký tên / ghi rõ họ tên" /></div>
+            <div class="sig-box"><label>Quản lý xác nhận</label><input class="input" id="sigManager" placeholder="Ký tên / ghi rõ họ tên" /></div>
+          </div>
+          <button class="btn good" id="saveSigBtn" style="margin-top:12px;width:100%">💾 Lưu xác nhận bàn giao</button>
+        </section>
+      </aside>
+    </section>
+  </div>
+
+  <!-- Help / Onboarding Modal -->
+  <div class="modal-backdrop" id="guideModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Hướng dẫn sử dụng Webapp Checklist</h2>
+        <button class="close-x" data-close-modal>Đóng</button>
+      </div>
+      <div class="modal-body">
+        <div class="steps">
+          <div class="step">
+            <b>1. Khai báo nhân viên & Ngày</b>
+            <p>Nhập họ tên đầy đủ, chọn ngày làm việc (mặc định hôm nay). Thông tin dùng để lưu vết lịch sử checklist.</p>
+          </div>
+          <div class="step">
+            <b>2. Chọn Khu Trực & Tham Gia</b>
+            <p>Chọn khu trực (A, B, C, D&E) trên bảng màu rồi bấm "Tham gia checklist". Tiến độ khu trực sẽ được đồng bộ trực tiếp.</p>
+          </div>
+          <div class="step">
+            <b>3. Chế Độ Lưu Trữ</b>
+            <p>Nên chọn "Lưu hàng loạt" để tick chọn tất cả công việc rồi bấm nút đồng bộ lên Google Sheets 1 lần để tiết kiệm lưu lượng.</p>
+          </div>
+          <div class="step">
+            <b>4. Checklist Con Tự Động</b>
+            <p>Hạng mục tổng sẽ tự động đánh dấu hoàn thành khi bạn tick đủ tất cả các checklist nhỏ bên dưới.</p>
+          </div>
+          <div class="step">
+            <b>5. Đề Xuất Vật Tư & Ký Tên</b>
+            <p>Ghi chú các hư hỏng hoặc đề xuất vật tư cần cấp, ký nhận/giao ca để báo cáo quản lý.</p>
+          </div>
+          <div class="step">
+            <b>6. Tạo Báo Cáo Hình Ảnh</b>
+            <p>Tải ảnh PNG tổng hợp tiến độ 4 khu hoặc khu đang chọn để gửi nhanh qua Zalo/nhóm làm việc.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
+          <button class="btn primary" id="understandGuideBtn">Tôi đã hiểu và bắt đầu sử dụng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report / Image Export Modal -->
+  <div class="modal-backdrop report-modal" id="reportModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Báo cáo hình ảnh tiến độ checklist</h2>
+        <button class="close-x" data-close-report-modal>Đóng</button>
+      </div>
+      <div class="modal-body">
+        <div class="report-toolbar">
+          <div class="hint">Xem trước và tải ảnh báo cáo PNG gửi nhóm giám sát/quản lý.</div>
+          <div class="pill" id="reportMetaPill">Khu ____ · __/__/20__</div>
+        </div>
+        <div class="report-options">
+          <div class="report-box">
+            <h3>Tùy chỉnh nội dung</h3>
+            <div class="report-option-grid">
+              <label class="report-option">
+                <input type="radio" name="reportScope" value="current" checked>
+                <span><b>Báo cáo khu đang chọn</b><br><small>Tạo ảnh tiến độ riêng cho khu đang làm.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="radio" name="reportScope" value="all">
+                <span><b>Tổng hợp cả 4 khu</b><br><small>Xem nhanh trạng thái checklist toàn bộ nhà hàng.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="radio" name="reportMode" value="completed" checked>
+                <span><b>Chỉ việc đã hoàn thành</b><br><small>Ẩn các việc chưa làm, giúp ảnh báo cáo ngắn gọn.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="radio" name="reportMode" value="all">
+                <span><b>Hiển thị đầy đủ checklist</b><br><small>Báo cáo chi tiết mọi hạng mục công việc.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportShowSubtasks" checked>
+                <span><b>Hiển thị checklist con</b><br><small>Kèm theo trạng thái các checklist nhỏ.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportIncludeSupply" checked>
+                <span><b>Kèm đề xuất vật tư</b><br><small>Hiển thị các vật tư cần cấp trong ngày.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportIncludeSignatures" checked>
+                <span><b>Kèm chữ ký bàn giao</b><br><small>Hiển thị họ tên phụ trách bàn giao ca.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportIncludeEmptyGroups">
+                <span><b>Hiển thị nhóm rỗng</b><br><small>Giữ nguyên đầy đủ phân mục dù chưa làm việc nào.</small></span>
+              </label>
+            </div>
+          </div>
+          <div class="report-box">
+            <h3>Tải ảnh báo cáo</h3>
+            <p class="hint" style="margin-bottom:12px">Hãy lưu/đồng bộ các thay đổi lên Google Sheets trước khi tải ảnh để đảm bảo dữ liệu là mới nhất.</p>
+            <div class="report-download-actions">
+              <button class="btn" id="refreshReportBtn">🔄 Làm mới xem trước</button>
+              <button class="btn primary" id="downloadReportBtn">🖼️ Tải ảnh PNG báo cáo</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-preview-wrap">
+          <div class="report-preview-scroller" id="reportPreview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Local libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+  // Configuration keys
+  const AREA_CODES = ['A', 'B', 'C', 'D&E'];
+  const STORAGE_KEY = 'kg_ops_checklist_v7';
+  const SESSION_KEY = 'kg_ops_checklist_session_v7';
+  const ONBOARD_KEY = 'kg_ops_checklist_onboarded_v7';
+  const API_URL_KEY = 'kg_ops_checklist_api_url';
+
+  // Default checklist definition fallback (if sheet is inaccessible or offline)
+  const DEFAULT_CHECKLIST = [
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'I. Vệ sinh & setup khu trực', items:[
+      {no:1, id:'start_clean_floor', title:'Vệ sinh sàn & Khu vực chung', text:'Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.', subitems:[
+        {id:'floor_sweep',text:'Quét sạch tổng thể sàn khu trực'},{id:'floor_mop',text:'Lau sàn, xử lý vết bẩn dễ thấy'},{id:'gate_clean',text:'Quét dọn sạch khu vực cổng ra vào'},{id:'corner_check',text:'Kiểm tra góc khuất, gầm/tủ gần khu trực'}
+      ]},
+      {no:2, id:'start_table_setup', title:'Bàn ghế', text:'Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.', subitems:[
+        {id:'table_wipe',text:'Lau sạch mặt bàn'},{id:'chair_wipe',text:'Lau sạch ghế và sắp xếp ngay ngắn'},{id:'tableware_ready',text:'Setup đủ chén, đũa, muỗng, ly'},{id:'reservation_layout',text:'Bố trí bàn ghế đúng lịch đặt bàn'}
+      ]},
+      {no:3, id:'start_background', title:'Background tiệc', text:'Lau bụi background/vật dụng trang trí.', subitems:[
+        {id:'bg_dust',text:'Lau bụi background và vật dụng trang trí'},{id:'decor_check',text:'Kiểm tra hoa/nến/decor nếu có'},{id:'decor_report',text:'Báo quản lý nếu decor hỏng, thiếu hoặc lệch tông'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'II. Công cụ & Vật tư', items:[
+      {no:4, id:'start_tools_check', title:'Diêm/bật lửa, khăn giấy, hộp/bịch mang về', text:'Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.', subitems:[
+        {id:'match_lighter',text:'Kiểm tra diêm/bật lửa'},{id:'tissue_ready',text:'Kiểm tra khăn giấy'},{id:'takeaway_ready',text:'Kiểm tra hộp/bịch mang về'},{id:'supply_shortage',text:'Ghi nhận vật tư thiếu để đề xuất cấp thêm'}
+      ]},
+      {no:5, id:'start_station_arrange', title:'Sắp xếp', text:'Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.', subitems:[
+        {id:'cabinet_tidy',text:'Sắp xếp gọn tủ đồ khu trực'},{id:'station_ready',text:'Bố trí trạm đồ dùng dự phòng'},{id:'tool_easy_access',text:'Đặt dụng cụ ở vị trí dễ lấy khi đông khách'},{id:'station_clean',text:'Kiểm tra trạm không bừa bộn, không lẫn đồ hư'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'III. Bàn đặt trước', items:[
+      {no:6, id:'start_reserved_setup', title:'Setup bàn đặt', text:'Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.', subitems:[
+        {id:'reserved_count',text:'Kiểm tra đủ số lượng bàn/ghế'},{id:'reserved_theme',text:'Đúng tông màu/trang trí theo yêu cầu'},{id:'reserved_need',text:'Đúng nhu cầu tiệc: sinh nhật, liên hoan, gia đình...'},{id:'reserved_food_drink',text:'Nắm món/đồ uống đặt trước nếu có'}
+      ]},
+      {no:7, id:'start_reserved_mark', title:'Đánh dấu', text:'Cắm khăn giấy nhận diện hoặc đặt bảng “Bàn đặt trước”.', subitems:[
+        {id:'reserved_tissue',text:'Cắm khăn giấy nhận diện bàn đặt trước'},{id:'reserved_sign',text:'Đặt bảng “Bàn đặt trước” nếu cần'},{id:'reserved_position',text:'Kiểm tra đúng vị trí, tránh nhầm bàn'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'IV. Bàn giao đầu ca', items:[
+      {no:8, id:'start_handover_receive', title:'Nhận bàn giao', text:'Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.', subitems:[
+        {id:'handover_assets',text:'Kiểm tra tài sản/dụng cụ được bàn giao'},{id:'handover_info',text:'Nắm thông tin tồn đọng từ ca trước'},{id:'handover_issue',text:'Phản hồi sai sót nếu có'},{id:'handover_report',text:'Báo cáo lại cho tổ trưởng/quản lý'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 17H: RÀ SOÁT & HOÀN THIỆN', section:'V. Kiểm tra chéo & Bổ sung', items:[
+      {no:9, id:'mid_double_check', title:'Double-check ca 15h', text:'Hoàn thành các việc tồn đọng của đầu ca.', subitems:[
+        {id:'double_clean',text:'Rà soát vệ sinh khu vực'},{id:'double_setup',text:'Rà soát setup bàn ghế/dụng cụ'},{id:'double_reserved',text:'Rà soát bàn đặt trước'},{id:'double_pending',text:'Xử lý việc tồn đọng hoặc báo quản lý'}
+      ]},
+      {no:10, id:'mid_table_ready', title:'Chuẩn bị cho bàn ăn', text:'Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.', subitems:[
+        {id:'sauce_ready',text:'Chuẩn bị/kiểm tra nước chấm'},{id:'cold_towel_ready',text:'Chuẩn bị/kiểm tra khăn lạnh'},{id:'pre_drink_ready',text:'Kiểm tra đồ uống đặt trước'},{id:'table_extra_ready',text:'Bổ sung dụng cụ nếu thiếu'}
+      ]},
+      {no:11, id:'mid_devices_on', title:'Bật các thiết bị cần thiết', text:'Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.', subitems:[
+        {id:'light_hall',text:'Bật đèn sảnh/khu vực phục vụ'},{id:'light_decor',text:'Bật đèn trang trí'},{id:'fan_ac',text:'Bật quạt/máy lạnh phù hợp'},{id:'device_check',text:'Kiểm tra thiết bị hoạt động bình thường'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 17H: RÀ SOÁT & HOÀN THIỆN', section:'VI. Thông tin và kế hoạch trong ngày', items:[
+      {no:12, id:'mid_daily_info', title:'Nắm thông tin', text:'Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.', subitems:[
+        {id:'info_reservation',text:'Nắm bàn đặt mới trong ngày'},{id:'info_out_of_stock',text:'Nắm món hết hàng/ngừng bán'},{id:'info_priority',text:'Nắm món ưu tiên bán'},{id:'info_promo',text:'Nắm chương trình khuyến mãi/ưu đãi'}
+      ]},
+      {no:13, id:'mid_assignment', title:'Phân công', text:'Điền tên vào bảng phân công vị trí trực.', subitems:[
+        {id:'assign_name',text:'Điền tên vào bảng phân công khu trực'},{id:'assign_position',text:'Nắm rõ vị trí/bàn phụ trách'},{id:'assign_support',text:'Nắm nhân sự hỗ trợ khi đông khách'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 17H: RÀ SOÁT & HOÀN THIỆN', section:'VII. Sẵn sàng phục vụ', items:[
+      {no:14, id:'mid_uniform', title:'Đảm bảo tác phong', text:'Đúng đồng phục, đeo bảng tên.', subitems:[
+        {id:'uniform_ok',text:'Đúng đồng phục'},{id:'name_tag_ok',text:'Đeo bảng tên'},{id:'appearance_ok',text:'Tác phong gọn gàng, lịch sự'}
+      ]},
+      {no:15, id:'mid_service_ready', title:'Sẵn sàng phục vụ', text:'Về đúng khu vực phân công, chuẩn bị đầy đủ để sẵn sàng phục vụ khách.', subitems:[
+        {id:'area_ready',text:'Có mặt đúng khu vực phân công'},{id:'observe_ready',text:'Quan sát khu vực, sẵn sàng hỗ trợ khách'},{id:'service_tools_ready',text:'Chuẩn bị dụng cụ cần thiết để phục vụ nhanh'}
+      ]}
+    ]},
+    { phase:'CHECKLIST CUỐI CA', shift:'XUỐNG CA LẦN 1', section:'VIII. Xuống ca lần 1 (21h - 22h)', items:[
+      {no:16, id:'end1_prepare_next', title:'Thu dọn và chuẩn bị cho ca sau', text:'Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.', subitems:[
+        {id:'end1_station_clear',text:'Cất dọn trạm đồ dùng dự phòng'},{id:'end1_tool_prepare',text:'Chuẩn bị thêm đồ dùng cho nhóm sau'},{id:'end1_table_chair',text:'Lau bàn ghế khu vực trống khách'},{id:'end1_support',text:'Hỗ trợ giảm tải cho nhóm còn lại'}
+      ]},
+      {no:17, id:'end1_reserved_support', title:'Hỗ trợ sắp xếp các bàn đặt trước', text:'Ưu tiên sắp xếp các khu vực trống khách.', subitems:[
+        {id:'end1_empty_area',text:'Ưu tiên xử lý khu vực đã trống khách'},{id:'end1_next_reserved',text:'Sắp xếp bàn đặt trước nếu có'},{id:'end1_move_table',text:'Đổi bàn/ghế đúng nhu cầu nếu cần'}
+      ]},
+      {no:18, id:'end1_clean_empty', title:'Vệ sinh', text:'Quét dọn, lau gầm các bàn trống khách.', subitems:[
+        {id:'end1_sweep',text:'Quét dọn khu vực trống khách'},{id:'end1_under_table',text:'Lau gầm bàn/gầm ghế'},{id:'end1_small_trash',text:'Thu gom rác nhỏ trong khu'}
+      ]},
+      {no:19, id:'end1_handover_support', title:'Hỗ trợ bàn giao', text:'Thông tin các công việc đã xử lý, hỗ trợ kiểm tra đồ dùng.', subitems:[
+        {id:'end1_work_done',text:'Thông tin việc đã xử lý'},{id:'end1_tool_check',text:'Hỗ trợ kiểm tra đồ dùng'},{id:'end1_note_next',text:'Ghi chú việc còn lại cho nhóm sau'}
+      ]}
+    ]},
+    { phase:'CHECKLIST CUỐI CA', shift:'XUỐNG CA SAU CÙNG', section:'IX. Xuống ca sau cùng (sau 23h hoặc hết khách)', items:[
+      {no:20, id:'end_final_clean', title:'Vệ sinh & Thu dọn', text:'Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.', subitems:[
+        {id:'final_menu',text:'Vệ sinh menu'},{id:'final_ice_bucket',text:'Vệ sinh xô đá'},{id:'final_shaker',text:'Vệ sinh thùng lắc/xẻ'},{id:'final_setup',text:'Thu dọn setup và lau mặt ghế còn lại'},{id:'final_floor',text:'Quét, lau phần sàn nhà còn lại'},{id:'final_trash',text:'Thu gom rác, đổ rác, vệ sinh thùng rác/hót rác'}
+      ]},
+      {no:21, id:'end_final_area_arrange', title:'Sắp xếp khu trực', text:'Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.', subitems:[
+        {id:'final_reserved',text:'Sắp xếp bàn đặt trước còn lại'},{id:'final_return_tools',text:'Gửi trả thiết bị về đúng vị trí'},{id:'final_fan_light',text:'Sắp xếp gọn quạt/đèn'},{id:'final_background',text:'Sắp xếp khung background/decor đúng vị trí'}
+      ]},
+      {no:22, id:'end_final_tools', title:'Kiểm tra thiết bị & khu vực', text:'Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.', subitems:[
+        {id:'final_awning',text:'Kéo/đóng mái che, bạt che mưa nếu cần'},{id:'final_photo',text:'Quay video/chụp ảnh khu trực'},{id:'final_power',text:'Tắt thiết bị điện/đèn chiếu sáng'},{id:'final_fan_ac_off',text:'Tắt quạt/máy lạnh khu vực'}
+      ]},
+      {no:23, id:'end_final_report', title:'Báo cáo và đóng ca', text:'Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.', subitems:[
+        {id:'final_damage',text:'Báo cáo hư hỏng trong ca'},{id:'final_supply_report',text:'Báo cáo vật tư cần cấp cho ca sau'},{id:'final_tool_count',text:'Báo cáo số lượng đồ dùng nếu cần'},{id:'final_wash_area',text:'Tắt điện khu rửa chén'},{id:'final_wc',text:'Tắt đèn/máy lạnh nhà vệ sinh'},{id:'final_clock_out',text:'Chấm công và ra về'}
+      ]}
+    ]}
+  ];
+
+  // Global variables
+  let db = loadDB();
+  let session = loadSession();
+  let selectedArea = session.area || null;
+  let activePhase = 'ALL';
+  let pending = {}; // Buffers changes before saving to local & sync server
+  let checklist = DEFAULT_CHECKLIST; // Loaded dynamically from GAS
+  let flatItems = [];
+
+  const $ = sel => document.querySelector(sel);
+  const $ = sel => Array.from(document.querySelectorAll(sel));
+
+  // Handle Apps Script Webapp URL Configuration
+  let gasApiUrl = '';
+  function initApiUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramApi = urlParams.get('api');
+    if (paramApi) {
+      localStorage.setItem(API_URL_KEY, paramApi);
+      gasApiUrl = paramApi;
+    } else {
+      gasApiUrl = localStorage.getItem(API_URL_KEY) || '';
+    }
+  }
+
+  // API Call Dispatcher
+  async function callAPI(methodName, args = []) {
+    // 1. If running natively in Google Apps Script Environment
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler(res => {
+            if (res && res.success) resolve(res.data);
+            else reject(new Error(res ? res.error : "Unknown error"));
+          })
+          .withFailureHandler(err => reject(err))
+          [methodName](...args);
+      });
+    }
+
+    // 2. If external hosting, call deployed API URL
+    initApiUrl();
+    if (!gasApiUrl) {
+      console.warn("API URL not configured. Working in offline/local-only mode.");
+      throw new Error("API_NOT_CONFIGURED");
+    }
+
+    try {
+      // Use text/plain to avoid preflight OPTIONS request on Apps Script
+      const response = await fetch(gasApiUrl, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({ method: methodName, args: args })
+      });
+      const result = await response.json();
+      if (result.success) {
+        return result.data;
+      }
+      throw new Error(result.error || "Server responded with error status");
+    } catch(err) {
+      console.error("API Fetch Error:", err);
+      throw err;
+    }
+  }
+
+  // Utilities
+  function todayISO() {
+    const d = new Date();
+    const off = d.getTimezoneOffset();
+    return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+  }
+  
+  function formatDateVN(iso) {
+    if (!iso) return '__/__/20__';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function safeId(text) {
+    return (text || '').trim().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_|_$/g, '');
+  }
+
+  function loadDB() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { version: 7, days: {} };
+    } catch (e) {
+      return { version: 7, days: {} };
+    }
+  }
+
+  function saveDB() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  }
+
+  function loadSession() {
+    try {
+      return JSON.parse(localStorage.getItem(SESSION_KEY)) || { name: '', area: '' };
+    } catch (e) {
+      return { name: '', area: '' };
+    }
+  }
+
+  function saveSession() {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  }
+
+  function currentDate() {
+    return $('#workDate').value || todayISO();
+  }
+
+  function ensureDay(dateKey) {
+    if (!db.days[dateKey]) {
+      db.days[dateKey] = { createdAt: new Date().toISOString(), areas: {} };
+    }
+    AREA_CODES.forEach(area => {
+      if (!db.days[dateKey].areas[area]) {
+        db.days[dateKey].areas[area] = {
+          participants: [],
+          items: {},
+          supply: {},
+          signatures: {}
+        };
+      }
+    });
+    return db.days[dateKey];
+  }
+
+  function getAreaData(area = selectedArea) {
+    return ensureDay(currentDate()).areas[area];
+  }
+
+  function getSaveMode() {
+    return $('input[name="saveMode"]:checked').value;
+  }
+
+  function toast(msg, type = 'info') {
+    const el = $('#toast');
+    el.textContent = msg;
+    
+    // Style toast by type
+    if (type === 'success') {
+      el.style.borderLeft = "5px solid var(--green)";
+    } else if (type === 'error') {
+      el.style.borderLeft = "5px solid var(--red)";
+    } else {
+      el.style.borderLeft = "5px solid var(--blue-2)";
+    }
+    
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // Initialize
+  async function init() {
+    initApiUrl();
+    $('#workDate').value = todayISO();
+    $('#employeeName').value = session.name || '';
+    ensureDay(currentDate());
+    bindEvents();
+    
+    // Load config and sync date data
+    await syncInitData();
+
+    if (!localStorage.getItem(ONBOARD_KEY)) {
+      openGuide();
+    }
+  }
+
+  // Load configuration and data from Server
+  async function syncInitData() {
+    const dateKey = currentDate();
+    toast('Đang nạp dữ liệu từ Google Sheets...', 'info');
+    
+    try {
+      const serverData = await callAPI('getAppInitData', [dateKey]);
+      if (serverData && serverData.checklist) {
+        checklist = serverData.checklist;
+      }
+      
+      flatItems = checklist.flatMap(group => group.items.map(item => ({ ...item, group })));
+      
+      // Merge server progress data into local IndexedDB/LocalStorage DB
+      if (serverData && serverData.states) {
+        const day = ensureDay(dateKey);
+        AREA_CODES.forEach(area => {
+          if (serverData.states[area]) {
+            day.areas[area] = serverData.states[area];
+          }
+        });
+        saveDB();
+      }
+      toast('Nạp dữ liệu trực tuyến thành công!', 'success');
+    } catch(err) {
+      console.warn("Failed to load server data:", err);
+      // Fallback to local flatItems mapping
+      flatItems = checklist.flatMap(group => group.items.map(item => ({ ...item, group })));
+      
+      if (err.message === 'API_NOT_CONFIGURED') {
+        toast('Đang chạy chế độ ngoại tuyến (Chưa cài API URL)', 'info');
+      } else {
+        toast('Không kết nối được Sheets. Đang dùng dữ liệu ngoại tuyến.', 'error');
+      }
+    }
+    
+    renderAll();
+  }
+
+  function bindEvents() {
+    // Date & UI filter triggers
+    $('#workDate').addEventListener('change', async () => {
+      pending = {};
+      ensureDay(currentDate());
+      await syncInitData();
+    });
+    
+    $('#joinBtn').addEventListener('click', joinChecklist);
+    $('#savePendingBtn').addEventListener('click', () => syncStateToServer(true));
+    $('#syncServerBtn').addEventListener('click', () => syncStateToServer(true));
+    
+    // Guide modal
+    $('#helpBtn').addEventListener('click', openGuide);
+    $('#quickGuideBtn').addEventListener('click', openGuide);
+    $('#understandGuideBtn').addEventListener('click', () => {
+      localStorage.setItem(ONBOARD_KEY, '1');
+      closeGuide();
+    });
+    $('[data-close-modal]').forEach(b => b.addEventListener('click', closeGuide));
+    $('#guideModal').addEventListener('click', e => { if (e.target.id === 'guideModal') closeGuide(); });
+
+    // Print, JSON Import/Export
+    $('#printBtn').addEventListener('click', () => window.print());
+    $('#exportBtn').addEventListener('click', exportData);
+    $('#importBtn').addEventListener('click', () => $('#importFileInput').click());
+    $('#importFileInput').addEventListener('change', importData);
+
+    // Reset session
+    $('#resetSessionBtn').addEventListener('click', () => {
+      if (Object.keys(pending).length && !confirm('Bạn có thay đổi chưa đồng bộ. Vẫn muốn đăng xuất?')) return;
+      session = { name: '', area: '' };
+      selectedArea = null;
+      pending = {};
+      saveSession();
+      $('#employeeName').value = '';
+      renderAll();
+      toast('Đã đăng xuất phiên làm việc.', 'success');
+    });
+
+    // Side cards save triggers
+    $('#saveSupplyBtn').addEventListener('click', saveSupply);
+    $('#saveSigBtn').addEventListener('click', saveSignatures);
+
+    // Radio option switches
+    $('input[name="saveMode"]').forEach(r => r.addEventListener('change', () => {
+      pending = {};
+      renderChecklist();
+      toast('Đã chuyển chế độ lưu trữ.', 'success');
+    }));
+
+    // Report modal
+    $('#reportBtn').addEventListener('click', openReportModal);
+    $('#refreshReportBtn').addEventListener('click', renderReportPreview);
+    $('#downloadReportBtn').addEventListener('click', downloadReportImage);
+    $('[data-close-report-modal]').forEach(b => b.addEventListener('click', closeReportModal));
+    $('#reportModal').addEventListener('click', e => { if (e.target.id === 'reportModal') closeReportModal(); });
+    
+    $('input[name="reportMode"], input[name="reportScope"]').forEach(r => r.addEventListener('change', renderReportPreview));
+    ['#reportShowSubtasks', '#reportIncludeSupply', '#reportIncludeSignatures', '#reportIncludeEmptyGroups'].forEach(sel => {
+      $(sel).addEventListener('change', renderReportPreview);
+    });
+
+    // Exit Guard
+    window.addEventListener('beforeunload', e => {
+      if (Object.keys(pending).length) {
+        e.preventDefault();
+        e.returnValue = 'Bạn chưa đồng bộ tiến độ lên Google Sheets!';
+      }
+    });
+  }
+
+  function openGuide() { $('#guideModal').classList.add('show'); }
+  function closeGuide() { $('#guideModal').classList.remove('show'); }
+
+  // Join Zone checklist
+  function joinChecklist() {
+    const name = $('#employeeName').value.trim();
+    if (!name) {
+      toast('Vui lòng nhập họ tên đầy đủ.', 'error');
+      $('#employeeName').focus();
+      return;
+    }
+    if (!selectedArea) {
+      toast('Vui lòng chọn một khu trực bên dưới.', 'error');
+      return;
+    }
+    const areaData = getAreaData(selectedArea);
+    const key = safeId(name);
+    if (!areaData.participants.some(p => p.key === key)) {
+      areaData.participants.push({ key, name, joinedAt: new Date().toISOString() });
+    }
+    session = { name, area: selectedArea };
+    saveSession();
+    saveDB();
+    renderAll();
+    toast(`${name} đã tham gia checklist khu ${selectedArea}.`, 'success');
+    
+    // Automatically trigger a background update of participants to the server
+    if (getSaveMode() === 'single') {
+      syncStateToServer(false);
+    }
+  }
+
+  // Checklist computation helpers
+  function itemHasSubtasks(item) {
+    return Array.isArray(item.subitems) && item.subitems.length > 0;
+  }
+
+  function buildSubchecks(item, checked) {
+    const o = {};
+    (item.subitems || []).forEach(sub => o[sub.id] = !!checked);
+    return o;
+  }
+
+  function normalizeItemState(item, raw = {}) {
+    const subitems = item.subitems || [];
+    let subchecks = { ...(raw.subchecks || {}) };
+    if (subitems.length && raw.checked && !raw.subchecks) {
+      subchecks = buildSubchecks(item, true);
+    }
+    const checked = subitems.length ? subitems.every(sub => !!subchecks[sub.id]) : !!raw.checked;
+    return {
+      checked,
+      note: raw.note || '',
+      subchecks,
+      by: raw.by || '',
+      at: raw.at || ''
+    };
+  }
+
+  function getMergedItemState(item) {
+    const saved = normalizeItemState(item, (getAreaData().items || {})[item.id] || {});
+    if (Object.prototype.hasOwnProperty.call(pending, item.id)) {
+      const p = pending[item.id] || {};
+      const subchecks = itemHasSubtasks(item) ? { ...saved.subchecks, ...(p.subchecks || {}) } : {};
+      const checked = itemHasSubtasks(item) ? item.subitems.every(sub => !!subchecks[sub.id]) : !!p.checked;
+      return {
+        ...saved,
+        ...p,
+        subchecks,
+        checked,
+        note: (p.note ?? saved.note ?? '')
+      };
+    }
+    return saved;
+  }
+
+  function isItemCompleteForArea(areaData, item) {
+    return normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked;
+  }
+
+  function makeParentToggleState(item, checked, note = '') {
+    const subchecks = itemHasSubtasks(item) ? buildSubchecks(item, checked) : {};
+    const finalChecked = itemHasSubtasks(item) ? item.subitems.every(sub => !!subchecks[sub.id]) : !!checked;
+    return {
+      checked: finalChecked,
+      subchecks,
+      note,
+      by: session.name,
+      at: new Date().toISOString()
+    };
+  }
+
+  function makeSubToggleState(item, subId, checked, note = '') {
+    const cur = getMergedItemState(item);
+    const subchecks = { ...cur.subchecks, [subId]: !!checked };
+    const finalChecked = item.subitems.every(sub => !!subchecks[sub.id]);
+    return {
+      checked: finalChecked,
+      subchecks,
+      note,
+      by: session.name,
+      at: new Date().toISOString()
+    };
+  }
+
+  function countSubDone(item, state) {
+    return (item.subitems || []).filter(sub => !!state.subchecks?.[sub.id]).length;
+  }
+
+  // Render layouts
+  function renderAll() {
+    renderAreaBoard();
+    renderChecklist();
+    renderSupply();
+    renderSignatures();
+  }
+
+  function renderAreaBoard() {
+    const day = ensureDay(currentDate());
+    $('#areaBoard').innerHTML = AREA_CODES.map(area => {
+      const areaData = day.areas[area];
+      const done = flatItems.filter(item => isItemCompleteForArea(areaData, item)).length;
+      const total = flatItems.length;
+      const pct = total ? Math.round(done / total * 100) : 0;
+      const staff = areaData.participants.length 
+        ? areaData.participants.map(p => `<div class="staff-chip"><span>👤 ${escapeHtml(p.name)}</span><small>${timeOnly(p.joinedAt)}</small></div>`).join('')
+        : `<div class="empty">Chưa có nhân viên</div>`;
+        
+      return `<article class="area-card ${selectedArea === area ? 'active' : ''}" data-area="${area}">
+        <div class="area-head">
+          <div class="area-title-wrap">
+            <div class="area-title">Khu ${area}</div>
+            <span class="area-selected-badge">✓ Đang chọn</span>
+          </div>
+          <span class="pill">${pct}% xong</span>
+        </div>
+        <div class="progress-line"><span style="width:${pct}%"></span></div>
+        <div class="hint"><b>${areaData.participants.length}</b> NV trực · <b>${done}/${total}</b> hạng mục</div>
+        <div class="staff-list">${staff}</div>
+      </article>`;
+    }).join('');
+
+    $('.area-card').forEach(card => card.addEventListener('click', () => {
+      if (Object.keys(pending).length && !confirm('Bạn có thay đổi chưa đồng bộ. Vẫn muốn chuyển khu?')) return;
+      selectedArea = card.dataset.area;
+      if (session.name) {
+        session.area = selectedArea;
+        saveSession();
+      }
+      pending = {};
+      renderAll();
+      toast(`Đã chọn Khu ${selectedArea}.`, 'info');
+    }));
+  }
+
+  function renderChecklist() {
+    const content = $('#checklistContent'), placeholder = $('#joinPlaceholder');
+    if (!selectedArea || !session.name) {
+      content.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+      return;
+    }
+    content.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+    
+    $('#printTitle').textContent = `BẢNG CHECKLIST CÔNG VIỆC | KHU ${selectedArea} | NGÀY ${formatDateVN(currentDate())}`;
+    renderTabs();
+    renderSummary();
+    renderTaskTable();
+    renderPendingBanner();
+  }
+
+  function renderTabs() {
+    const tabs = [
+      { key: 'ALL', label: 'Tất cả' },
+      { key: 'CHECKLIST ĐẦU CA', label: 'Đầu ca' },
+      { key: 'CHECKLIST CUỐI CA', label: 'Cuối ca' },
+      { key: 'CA 15H: SETUP BÀN', label: 'Ca 15h' },
+      { key: 'CA 17H: RÀ SOÁT & HOÀN THIỆN', label: 'Ca 17h' },
+      { key: 'XUỐNG CA LẦN 1', label: 'Xuống ca 1' },
+      { key: 'XUỐNG CA SAU CÙNG', label: 'Xuống ca cuối' }
+    ];
+    $('#phaseTabs').innerHTML = tabs.map(t => `<button class="tab ${activePhase === t.key ? 'active' : ''}" data-tab="${t.key}">${t.label}</button>`).join('');
+    $('.tab').forEach(tab => tab.addEventListener('click', () => {
+      activePhase = tab.dataset.tab;
+      renderChecklist();
+    }));
+  }
+
+  function renderSummary() {
+    const states = flatItems.map(item => getMergedItemState(item));
+    const done = states.filter(s => s.checked).length;
+    const total = flatItems.length;
+    
+    const subTotal = flatItems.reduce((s, i) => s + (i.subitems?.length || 0), 0);
+    const subDone = flatItems.reduce((s, item, idx) => s + countSubDone(item, states[idx]), 0);
+    
+    const pct = total ? Math.round(done / total * 100) : 0;
+    
+    $('#summaryStrip').innerHTML = `
+      <div class="metric"><b>Khu ${selectedArea}</b><span>Khu đang trực</span></div>
+      <div class="metric"><b>${done}/${total}</b><span>Hạng mục tổng</span></div>
+      <div class="metric"><b>${subDone}/${subTotal}</b><span>Checklist con</span></div>
+      <div class="metric"><b>${pct}%</b><span>Hoàn thành</span></div>
+    `;
+  }
+
+  function groupVisible(group) {
+    return activePhase === 'ALL' || group.phase === activePhase || group.shift === activePhase;
+  }
+
+  function renderTaskTable() {
+    let html = '';
+    checklist.filter(groupVisible).forEach(group => {
+      html += `<tr class="group-row"><td colspan="4"><span class="phase-badge">${escapeHtml(group.phase)}</span><span class="phase-badge">${escapeHtml(group.shift)}</span>${escapeHtml(group.section)}</td></tr>`;
+      
+      group.items.forEach(item => {
+        const state = getMergedItemState(item);
+        const hasPending = Object.prototype.hasOwnProperty.call(pending, item.id);
+        const meta = state.checked 
+          ? `<span class="done-meta">✓ Xong ${state.by ? `bởi ${escapeHtml(state.by)}` : ''} ${state.at ? `lúc ${timeOnly(state.at)}` : ''}</span>`
+          : '<span>Chưa hoàn thành</span>';
+        
+        const note = getNoteValue(item.id) || state.note || '';
+        const subDone = countSubDone(item, state);
+        const subTotal = item.subitems?.length || 0;
+        
+        const subHtml = subTotal 
+          ? `<div class="subtask-panel">
+              <div class="subtask-head"><span>Checklist con của hạng mục</span><span class="subtask-count">${subDone}/${subTotal} đã tick</span></div>
+              <div class="subtask-grid">
+                ${item.subitems.map(sub => `<label class="subtask-item"><input class="subtask-checkbox" type="checkbox" data-parent-id="${item.id}" data-sub-id="${sub.id}" ${state.subchecks?.[sub.id] ? 'checked' : ''}> <span>${escapeHtml(sub.text)}</span></label>`).join('')}
+              </div>
+            </div>`
+          : '';
+        
+        const autoNote = subTotal && state.checked ? '<span class="auto-complete-note">✓ Tự động hoàn thành</span>' : '';
+        const pendingBadge = hasPending ? '<span style="color:var(--amber-text);font-weight:800;background:var(--amber-light);border:1px solid var(--amber-border);padding:2px 8px;border-radius:99px">Lưu tạm</span>' : '';
+        
+        html += `
+          <tr>
+            <td class="stt">${item.no}</td>
+            <td class="task-cell">
+              <div class="task-title">${escapeHtml(item.title)}</div>
+              <div class="task-text">${escapeHtml(item.text)}</div>
+              ${subHtml}
+              <div class="task-meta">${meta}${autoNote}${pendingBadge}</div>
+            </td>
+            <td class="check-cell">
+              <input class="checkbox" type="checkbox" data-item-id="${item.id}" ${state.checked ? 'checked' : ''}>
+            </td>
+            <td class="note-cell">
+              <textarea class="row-note" data-note-id="${item.id}" placeholder="Ghi chú nội bộ...">${escapeHtml(note)}</textarea>
+              <button class="tiny-btn" data-save-note="${item.id}">💾 Lưu ghi chú</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    $('#taskTableBody').innerHTML = html;
+    
+    // Register actions
+    $('input[data-item-id]').forEach(cb => cb.addEventListener('change', onItemToggle));
+    $('input[data-sub-id]').forEach(cb => cb.addEventListener('change', onSubItemToggle));
+    $('[data-save-note]').forEach(btn => btn.addEventListener('click', () => saveNote(btn.dataset.saveNote)));
+  }
+
+  function getNoteValue(id) {
+    const el = $('[data-note-id]').find(n => n.dataset.noteId === id);
+    return el ? el.value.trim() : '';
+  }
+
+  // Toggling checklists
+  async function onItemToggle(e) {
+    const id = e.target.dataset.itemId;
+    const checked = e.target.checked;
+    const item = flatItems.find(x => x.id === id);
+    
+    const state = makeParentToggleState(item, checked, getNoteValue(id));
+
+    if (getSaveMode() === 'single') {
+      const detail = itemHasSubtasks(item) ? ' và các việc con?' : '?';
+      if (!confirm(`Xác nhận đánh dấu hoàn thành Hạng mục ${item.no}${detail}`)) {
+        e.target.checked = !checked;
+        return;
+      }
+      pending[id] = state;
+      await syncStateToServer(false);
+    } else {
+      pending[id] = state;
+      renderChecklist();
+      renderAreaBoard();
+    }
+  }
+
+  async function onSubItemToggle(e) {
+    const parentId = e.target.dataset.parentId;
+    const subId = e.target.dataset.subId;
+    const checked = e.target.checked;
+    const item = flatItems.find(x => x.id === parentId);
+    
+    const state = makeSubToggleState(item, subId, checked, getNoteValue(parentId));
+
+    if (getSaveMode() === 'single') {
+      pending[parentId] = state;
+      await syncStateToServer(false);
+    } else {
+      pending[parentId] = state;
+      renderChecklist();
+      renderAreaBoard();
+    }
+  }
+
+  async function saveNote(id) {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng tham gia checklist trước.', 'error');
+      return;
+    }
+    const item = flatItems.find(x => x.id === id);
+    const note = getNoteValue(id);
+    const cur = getMergedItemState(item);
+    
+    const next = {
+      ...cur,
+      note,
+      by: session.name,
+      at: new Date().toISOString()
+    };
+
+    pending[id] = next;
+    
+    if (getSaveMode() === 'single') {
+      await syncStateToServer(false);
+      toast('Ghi chú đã lưu trực tuyến!', 'success');
+    } else {
+      renderPendingBanner();
+      renderSummary();
+      toast('Ghi chú được lưu tạm. Hãy bấm nút đồng bộ.', 'info');
+    }
+  }
+
+  // Synchronize checklist changes to Google Sheets
+  async function syncStateToServer(interactive = true) {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng chọn khu & điền tên nhân viên trước!', 'error');
+      return;
+    }
+
+    const keys = Object.keys(pending);
+    if (!keys.length && interactive) {
+      toast('Không có thay đổi nào cần đồng bộ.', 'info');
+      return;
+    }
+
+    if (interactive && !confirm(`Đồng bộ các checklist Khu ${selectedArea} lên Google Sheets?`)) {
+      return;
+    }
+
+    const dateKey = currentDate();
+    const areaData = getAreaData();
+
+    // Apply pending local modifications to DB
+    keys.forEach(id => {
+      if (id === 'supply' || id === 'signatures') return;
+      const item = flatItems.find(x => x.id === id);
+      const state = pending[id];
+      const norm = normalizeItemState(item, state);
+      areaData.items[id] = {
+        checked: norm.checked,
+        note: norm.note,
+        subchecks: norm.subchecks,
+        by: session.name,
+        at: norm.at || new Date().toISOString()
+      };
+    });
+
+    const backupPending = { ...pending };
+    pending = {}; // Clear pending immediately to avoid repeat sync triggers
+    
+    toast('Đang đồng bộ dữ liệu lên Google Sheets...', 'info');
+    
+    try {
+      const result = await callAPI('saveChecklistState', [
+        dateKey,
+        selectedArea,
+        areaData.participants,
+        areaData.items,
+        areaData.supply,
+        areaData.signatures
+      ]);
+
+      saveDB();
+      renderAll();
+      toast('Đồng bộ dữ liệu lên Google Sheets thành công!', 'success');
+    } catch(err) {
+      console.error("Sync Failed:", err);
+      // Restore pending cache if server sync fails
+      pending = { ...backupPending, ...pending };
+      
+      if (err.message === 'API_NOT_CONFIGURED') {
+        saveDB();
+        renderAll();
+        toast('Dữ liệu đã được lưu ngoại tuyến trên trình duyệt (Thiếu API URL).', 'success');
+      } else {
+        toast('Lỗi đồng bộ. Dữ liệu đã lưu tạm trên thiết bị, sẽ thử lại sau.', 'error');
+      }
+    }
+  }
+
+  function renderPendingBanner() {
+    const count = Object.keys(pending).length;
+    $('#pendingText').textContent = count ? `Có ${count} hạng mục checklist thay đổi chưa đồng bộ lên Google Sheets.` : '';
+    $('#pendingBanner').classList.toggle('show', !!count);
+  }
+
+  // Supply Management
+  function renderSupply() {
+    $('#supplyArea').textContent = selectedArea || '____';
+    $('#supplyDate').textContent = formatDateVN(currentDate());
+    const supply = selectedArea ? (getAreaData(selectedArea).supply || {}) : {};
+    $('[data-supply]').forEach(cb => cb.checked = !!supply[cb.dataset.supply]);
+    $('#supplyNote').value = supply.note || '';
+    
+    $('#supplyMeta').textContent = supply.savedAt 
+      ? `Đã lưu: ${supply.by || ''} lúc ${timeOnly(supply.savedAt)} ${dateOnly(supply.savedAt)}.`
+      : 'Đủ dùng trong ca trực. Nếu vẫn đủ dùng, chọn "Đủ dùng".';
+  }
+
+  async function saveSupply() {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng tham gia checklist trước.', 'error');
+      return;
+    }
+    
+    if (!confirm('Lưu đề xuất vật tư này?')) return;
+    
+    const supply = {
+      note: $('#supplyNote').value.trim(),
+      by: session.name,
+      savedAt: new Date().toISOString()
+    };
+    $('[data-supply]').forEach(cb => supply[cb.dataset.supply] = cb.checked);
+    
+    getAreaData().supply = supply;
+    saveDB();
+    renderSupply();
+    pending['supply'] = true;
+
+    if (getSaveMode() === 'single') {
+      await syncStateToServer(false);
+    } else {
+      renderPendingBanner();
+      toast('Đã lưu tạm đề xuất vật tư. Hãy bấm nút đồng bộ.', 'info');
+    }
+  }
+
+  // Signature Management
+  function renderSignatures() {
+    if (!selectedArea) {
+      $('#sigReceive').value = '';
+      $('#sigHandover').value = '';
+      $('#sigManager').value = '';
+      return;
+    }
+    const sig = getAreaData().signatures || {};
+    $('#sigReceive').value = sig.receive || '';
+    $('#sigHandover').value = sig.handover || '';
+    $('#sigManager').value = sig.manager || '';
+  }
+
+  async function saveSignatures() {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng tham gia checklist trước.', 'error');
+      return;
+    }
+    
+    if (!confirm('Lưu chữ ký xác nhận bàn giao ca?')) return;
+    
+    const sig = {
+      receive: $('#sigReceive').value.trim(),
+      handover: $('#sigHandover').value.trim(),
+      manager: $('#sigManager').value.trim(),
+      by: session.name,
+      savedAt: new Date().toISOString()
+    };
+    
+    getAreaData().signatures = sig;
+    saveDB();
+    renderSignatures();
+    pending['signatures'] = true;
+
+    if (getSaveMode() === 'single') {
+      await syncStateToServer(false);
+    } else {
+      renderPendingBanner();
+      toast('Đã lưu chữ ký bàn giao ca tạm thời. Hãy bấm nút đồng bộ.', 'info');
+    }
+  }
+
+  // Report PNG Modal Handlers
+  function getReportOptions() {
+    return {
+      scope: ($('input[name="reportScope"]:checked') || {}).value || 'current',
+      mode: ($('input[name="reportMode"]:checked') || {}).value || 'completed',
+      showSubtasks: !!$('#reportShowSubtasks').checked,
+      includeSupply: !!$('#reportIncludeSupply').checked,
+      includeSignatures: !!$('#reportIncludeSignatures').checked,
+      includeEmptyGroups: !!$('#reportIncludeEmptyGroups').checked
+    };
+  }
+
+  function openReportModal() {
+    if (!selectedArea) {
+      toast('Hãy chọn khu và tham gia trước khi tạo báo cáo.', 'error');
+      return;
+    }
+    if (Object.keys(pending).length) {
+      toast('Hãy lưu/đồng bộ các checklist trước khi tạo báo cáo.', 'error');
+      return;
+    }
+    $('#reportModal').classList.add('show');
+    renderReportPreview();
+  }
+
+  function closeReportModal() { $('#reportModal').classList.remove('show'); }
+
+  function getAreaStats(areaData) {
+    const totalItems = flatItems.length;
+    const doneItems = flatItems.filter(item => normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked).length;
+    
+    const totalSub = flatItems.reduce((s, i) => s + (i.subitems?.length || 0), 0);
+    const doneSub = flatItems.reduce((s, item) => s + countSubDone(item, normalizeItemState(item, (areaData.items || {})[item.id] || {})), 0);
+    
+    return {
+      totalItems,
+      doneItems,
+      pendingItems: totalItems - doneItems,
+      progress: totalItems ? Math.round((doneItems / totalItems) * 100) : 0,
+      totalSubtasks: totalSub,
+      doneSubtasks: doneSub,
+      pendingSubtasks: totalSub - doneSub
+    };
+  }
+
+  function renderReportPreview() {
+    const opts = getReportOptions();
+    if (opts.scope === 'all') {
+      const day = ensureDay(currentDate());
+      $('#reportMetaPill').textContent = `Tổng hợp 4 khu · ${formatDateVN(currentDate())}`;
+      $('#reportPreview').innerHTML = buildAllAreasReportHTML(day, opts);
+      return;
+    }
+    const areaData = getAreaData(selectedArea);
+    $('#reportMetaPill').textContent = `Khu ${selectedArea} · ${formatDateVN(currentDate())}`;
+    $('#reportPreview').innerHTML = buildReportHTML(areaData, opts);
+  }
+
+  function buildReportHTML(areaData, opts) {
+    const stats = getAreaStats(areaData);
+    const participants = (areaData.participants || []).map(p => `<span class="report-staff-chip">👤 ${escapeHtml(p.name)} · ${timeOnly(p.joinedAt)}</span>`).join('') 
+      || '<div class="report-empty">Chưa có nhân viên tham gia khu trực này.</div>';
+    
+    const groupsHtml = checklist.map(group => {
+      const rows = group.items.map(item => renderReportItem(item, normalizeItemState(item, (areaData.items || {})[item.id] || {}), opts)).filter(Boolean).join('');
+      const visibleCount = group.items.filter(item => opts.mode === 'all' || normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked).length;
+      if (!rows.trim() && !opts.includeEmptyGroups) return '';
+      const doneCount = group.items.filter(item => normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked).length;
+      return `<section class="report-group">
+        <div class="report-group-head">
+          <div>
+            <div class="report-group-title">${escapeHtml(group.section)}</div>
+            <div class="report-group-sub">
+              <span class="report-phase-pill">${escapeHtml(group.phase)}</span>
+              <span class="report-phase-pill">${escapeHtml(group.shift)}</span>
+              <span class="report-count-pill">${doneCount}/${group.items.length} hạng mục xong</span>
+            </div>
+          </div>
+          <div class="report-status ${doneCount === group.items.length ? 'done' : 'pending'}">${opts.mode === 'completed' ? visibleCount + ' mục hiển thị' : 'Đầy đủ'}</div>
+        </div>
+        ${rows || '<div class="report-empty">Không có hạng mục công việc.</div>'}
+      </section>`;
+    }).join('') || '<div class="report-section"><div class="report-empty">Chưa có dữ liệu.</div></div>';
+
+    const supplyHtml = opts.includeSupply ? buildSupplyReport(areaData) : '';
+    const sigHtml = opts.includeSignatures ? buildSignatureReport(areaData) : '';
+
+    return `
+      <div class="report-sheet" id="reportSheet">
+        <header class="report-header">
+          <div>
+            <div class="report-kicker">KING'S GRILL · CHECKLIST BÁO CÁO</div>
+            <div class="report-title">Báo cáo checklist công việc hàng ngày</div>
+            <p class="report-subtitle">Tình trạng hoàn thành công việc đầu ca - cuối ca, ghi chú vận hành và chữ ký xác nhận.</p>
+          </div>
+          <div class="report-badge-area"><b>Khu trực</b><span>${escapeHtml(selectedArea)}</span></div>
+        </header>
+        <div class="report-meta-bar">
+          <section class="report-staff">
+            <div class="report-section-title">👥 Nhân viên khu trực</div>
+            <div class="report-staff-chips">${participants}</div>
+          </section>
+          <section class="report-meta-card">
+            <div class="report-section-title">🗓️ Thông tin vận hành</div>
+            <div class="report-item-meta">
+              <span>Ngày: <b>${formatDateVN(currentDate())}</b></span>
+              <span>Chế độ: <b>${opts.mode === 'completed' ? 'Việc đã làm' : 'Toàn bộ'}</b></span>
+              <span>Tạo lúc: <b>${timeOnly(new Date().toISOString())}</b></span>
+            </div>
+          </section>
+        </div>
+        <div class="report-meta-list">
+          <div class="report-metric"><b>${stats.doneItems}/${stats.totalItems}</b><span>Hạng mục xong</span></div>
+          <div class="report-metric"><b>${stats.progress}%</b><span>Tỷ lệ xong</span></div>
+          <div class="report-metric"><b>${stats.doneSubtasks}/${stats.totalSubtasks}</b><span>Việc con xong</span></div>
+          <div class="report-metric"><b>${stats.pendingItems}</b><span>Mục chưa làm</span></div>
+        </div>
+        ${groupsHtml}
+        ${supplyHtml}
+        ${sigHtml}
+        <footer class="report-footer">
+          <div>Hệ thống đồng bộ Google Sheets · Báo cáo ảnh PNG</div>
+          <div>Bảng checklist công việc nhà hàng King's Grill</div>
+        </footer>
+      </div>
+    `;
+  }
+
+  function renderReportItem(item, state, opts) {
+    if (opts.mode === 'completed' && !state.checked) return '';
+    const isDone = state.checked;
+    let subtasks = '';
+    
+    if (opts.showSubtasks && itemHasSubtasks(item)) {
+      const rows = (item.subitems || [])
+        .filter(sub => opts.mode === 'all' || !!state.subchecks?.[sub.id])
+        .map(sub => {
+          const subDone = !!state.subchecks?.[sub.id];
+          return `<div class="report-subtask ${subDone ? 'done' : 'pending'}"><span class="dot">${subDone ? '✓' : '•'}</span><span>${escapeHtml(sub.text)}</span></div>`;
+        }).join('');
+      if (rows) subtasks = `<div class="report-subtasks">${rows}</div>`;
+    }
+
+    const note = state.note ? `<div class="report-note"><b>Ghi chú:</b> ${escapeHtml(state.note)}</div>` : '';
+    
+    return `
+      <div class="report-item ${isDone ? 'done' : 'pending'}">
+        <div class="report-item-head">
+          <div class="report-item-main">
+            <div class="report-item-no">${escapeHtml(item.no)}</div>
+            <div>
+              <div class="report-item-title">${escapeHtml(item.title)}</div>
+              <div class="report-item-text">${escapeHtml(item.text)}</div>
+            </div>
+          </div>
+          <div class="report-status ${isDone ? 'done' : 'pending'}">${isDone ? '✓ Đã xong' : '• Chưa xong'}</div>
+        </div>
+        <div class="report-item-meta">
+          <span>${state.by ? 'Xác nhận: ' + escapeHtml(state.by) : 'Chưa xác nhận'}</span>
+          <span>${state.at ? timeOnly(state.at) + ' ' + dateOnly(state.at) : ''}</span>
+        </div>
+        ${subtasks}
+        ${note}
+      </div>
+    `;
+  }
+
+  function buildSupplyReport(areaData) {
+    const map = {
+      du_dung: 'Đủ dùng',
+      khan_giay: 'Khăn giấy',
+      ong_hut: 'Ống hút',
+      diem: 'Diêm',
+      tam: 'Tăm',
+      xien_tre: 'Xiên tre',
+      bao_tay: 'Bao tay',
+      bao_rac: 'Bao rác',
+      bao_rac_den: 'Bao rác đen kín',
+      bao_rac_dai: 'Bao rác đại',
+      bao_rac_trung: 'Bao rác trung',
+      bao_rac_tieu: 'Bao rác tiểu',
+      bich_mang_ve: 'Bọc mang về',
+      bich_lau: 'Bịch lẩu',
+      bich_3kg: 'Bịch 3kg',
+      bich_5kg: 'Bịch 5kg',
+      hop_mang_ve: 'Hộp mang về',
+      hop_xop: 'Hộp xốp',
+      hop_nhua: 'Nhựa nắp rời'
+    };
+    
+    const s = areaData.supply || {};
+    const selected = Object.entries(s)
+      .filter(([k, v]) => !['note', 'by', 'savedAt'].includes(k) && v)
+      .map(([k]) => `<span class="report-staff-chip">${escapeHtml(map[k] || k)}</span>`)
+      .join('');
+      
+    return `
+      <section class="report-section">
+        <div class="report-section-title">📦 Đề xuất cấp vật tư</div>
+        ${selected ? `<div class="report-staff-chips">${selected}</div>` : '<div class="report-empty">Không có vật tư đề xuất.</div>'}
+        ${s.note ? `<div class="report-note"><b>Ghi chú vật tư:</b> ${escapeHtml(s.note)}</div>` : ''}
+        <div class="report-item-meta">
+          ${s.savedAt ? `<span>Đề xuất: ${escapeHtml(s.by || '')} lúc ${timeOnly(s.savedAt)}</span>` : ''}
+        </div>
+      </section>
+    `;
+  }
+
+  function buildSignatureReport(areaData) {
+    const sig = areaData.signatures || {};
+    return `
+      <section class="report-section">
+        <div class="report-section-title">✍️ Xác nhận bàn giao ca</div>
+        <div class="report-staff-chips">
+          <span class="report-staff-chip">Nhận ca: ${escapeHtml(sig.receive || 'Chưa ký')}</span>
+          <span class="report-staff-chip">Giao ca: ${escapeHtml(sig.handover || 'Chưa ký')}</span>
+          <span class="report-staff-chip">Quản lý: ${escapeHtml(sig.manager || 'Chưa xác nhận')}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  function buildAllAreasReportHTML(day, opts) {
+    const totals = AREA_CODES.reduce((a, area) => {
+      const s = getAreaStats(day.areas[area]);
+      a.doneItems += s.doneItems;
+      a.totalItems += s.totalItems;
+      a.doneSubtasks += s.doneSubtasks;
+      a.totalSubtasks += s.totalSubtasks;
+      a.staff += (day.areas[area].participants || []).length;
+      return a;
+    }, { doneItems: 0, totalItems: 0, doneSubtasks: 0, totalSubtasks: 0, staff: 0 });
+
+    const pct = totals.totalItems ? Math.round((totals.doneItems / totals.totalItems) * 100) : 0;
+    
+    const blocks = AREA_CODES.map(area => {
+      const data = day.areas[area];
+      const stats = getAreaStats(data);
+      const staff = (data.participants || []).map(p => `<span class="report-staff-chip">👤 ${escapeHtml(p.name)}</span>`).join('') 
+        || '<div class="report-empty">Không có nhân viên.</div>';
+        
+      const source = opts.mode === 'completed' 
+        ? flatItems.filter(item => normalizeItemState(item, (data.items || {})[item.id] || {}).checked)
+        : flatItems;
+        
+      const limit = opts.mode === 'completed' ? 18 : 24;
+      const items = source.slice(0, limit)
+        .map(item => renderReportItem(item, normalizeItemState(item, (data.items || {})[item.id] || {}), opts))
+        .join('') || '<div class="report-empty">Không có hạng mục.</div>';
+
+      return `
+        <section class="report-area-block">
+          <div class="report-area-block-head">
+            <div>
+              <div class="report-area-block-title">Khu ${escapeHtml(area)}</div>
+              <div class="report-group-sub">
+                <span class="report-count-pill">${stats.doneItems}/${stats.totalItems} hạng mục</span>
+                <span class="report-phase-pill">${stats.doneSubtasks}/${stats.totalSubtasks} việc con</span>
+              </div>
+            </div>
+            <div class="report-status ${stats.progress === 100 ? 'done' : 'pending'}">${stats.progress}% hoàn thành</div>
+          </div>
+          <div class="report-area-grid">
+            <div class="report-mini-metric"><b>${stats.doneItems}</b><span>Hạng mục xong</span></div>
+            <div class="report-mini-metric"><b>${stats.pendingItems}</b><span>Chưa hoàn thành</span></div>
+            <div class="report-mini-metric"><b>${stats.doneSubtasks}</b><span>Việc con xong</span></div>
+            <div class="report-mini-metric"><b>${(data.participants || []).length}</b><span>Nhân viên trực</span></div>
+          </div>
+          <section class="report-section" style="margin:0 20px 14px">
+            <div class="report-section-title">👥 Phụ trách</div>
+            <div class="report-staff-chips">${staff}</div>
+          </section>
+          <section class="report-section" style="margin:0 20px 20px">
+            <div class="report-section-title">${opts.mode === 'completed' ? '✅ Việc đã làm' : '📋 Trạng thái checklist'}</div>
+            ${items}
+            ${source.length > limit ? `<div class="report-note">Còn ${source.length - limit} việc khác được thu gọn.</div>` : ''}
+          </section>
+        </section>
+      `;
+    }).join('');
+
+    return `
+      <div class="report-sheet" id="reportSheet">
+        <header class="report-header">
+          <div>
+            <div class="report-kicker">KING'S GRILL · CHECKLIST BÁO CÁO TỔNG HỢP</div>
+            <div class="report-title">Báo cáo tổng hợp tiến độ checklist 4 khu</div>
+            <p class="report-subtitle">Tổng hợp trạng thái checklist vận hành ngày hôm nay.</p>
+          </div>
+          <div class="report-badge-area"><b>Tổng tiến độ</b><span>${pct}%</span></div>
+        </header>
+        <div class="report-meta-list">
+          <div class="report-metric"><b>${totals.doneItems}/${totals.totalItems}</b><span>Hạng mục tổng xong</span></div>
+          <div class="report-metric"><b>${totals.doneSubtasks}/${totals.totalSubtasks}</b><span>Việc con xong</span></div>
+          <div class="report-metric"><b>${totals.staff}</b><span>Nhân viên tham gia</span></div>
+          <div class="report-metric"><b>${formatDateVN(currentDate())}</b><span>Ngày báo cáo</span></div>
+        </div>
+        ${blocks}
+        <footer class="report-footer">
+          <div>Hệ thống đồng bộ Google Sheets · Báo cáo ảnh tổng hợp</div>
+          <div>Bảng tổng hợp checklist King's Grill</div>
+        </footer>
+      </div>
+    `;
+  }
+
+  // Export report preview layout to PNG image file
+  async function downloadReportImage() {
+    const target = $('#reportSheet');
+    if (!target) {
+      toast('Không tìm thấy nội dung báo cáo để xuất ảnh.', 'error');
+      return;
+    }
+    const btn = $('#downloadReportBtn');
+    const old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Đang xuất ảnh...';
+
+    try {
+      let canvas;
+      if (window.html2canvas) {
+        canvas = await window.html2canvas(target, {
+          scale: 2,
+          backgroundColor: '#f5f8fc',
+          useCORS: true,
+          logging: false
+        });
+      } else {
+        throw new Error('Thư viện html2canvas chưa được nạp.');
+      }
+      
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      const scopeName = getReportOptions().scope === 'all' ? 'TONG_HOP_4_KHU' : String(selectedArea || '').replace('&', 'E');
+      a.download = `KG_CHECKLIST_BAOCAO_${currentDate()}_${scopeName}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast('Đã tải ảnh báo cáo PNG thành công!', 'success');
+    } catch (err) {
+      console.error(err);
+      toast('Không thể tải ảnh. Hãy thử lại hoặc in file ra PDF.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = old;
+    }
+  }
+
+  // Data Import/Export (JSON Local Backup)
+  function exportData() {
+    const payload = {
+      schema: 'KG_CHECKLIST_WEBAPP_V7',
+      exportedAt: new Date().toISOString(),
+      selectedDate: currentDate(),
+      selectedArea,
+      data: ensureDay(currentDate()),
+      fullDB: db
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `KG_CHECKLIST_${currentDate()}${selectedArea ? '_' + selectedArea.replace('&', 'E') : ''}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('Đã xuất dữ liệu lưu trữ JSON!', 'success');
+  }
+
+  function importData(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const payload = JSON.parse(reader.result);
+        const incoming = payload.fullDB || payload;
+        
+        if (!incoming.days && payload.data?.areas) {
+          incoming.days = { [payload.selectedDate || currentDate()]: payload.data };
+        }
+        
+        if (!incoming.days) throw new Error('Cấu trúc file JSON không chính xác.');
+        
+        if (!confirm('Nhập đè dữ liệu checklist đã chọn? Tiến độ hiện tại trên máy này sẽ bị gộp.')) return;
+        
+        db.days = { ...(db.days || {}), ...(incoming.days || {}) };
+        saveDB();
+        ensureDay(currentDate());
+        renderAll();
+        toast('Gộp dữ liệu thành công!', 'success');
+      } catch (err) {
+        console.error(err);
+        toast('File dữ liệu JSON không hợp lệ!', 'error');
+      } finally {
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  // Helper date/time formatters
+  function timeOnly(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function dateOnly(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('vi-VN');
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>'"]/g, s => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[s]));
+  }
+
+  // Execute initialization on page load
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

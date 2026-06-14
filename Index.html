@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>King's Grill - Checklist Vận Hành Hàng Ngày</title>
+  <?!= include('Styles'); ?>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">KG</div>
+        <div>
+          <h1>King's Grill - Bảng checklist công việc đầu ca - cuối ca</h1>
+          <div class="subtitle">Hệ thống đồng bộ dữ liệu Google Sheets trực tuyến · 4 khu A, B, C, D&amp;E · Tải báo cáo ảnh PNG</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="helpBtn">📘 Hướng dẫn</button>
+        <button class="btn" id="printBtn">🖨️ In checklist</button>
+        <button class="btn" id="exportBtn">⬇️ Xuất JSON</button>
+        <button class="btn" id="importBtn">⬆️ Nhập JSON</button>
+        <input type="file" id="importFileInput" accept="application/json" class="hidden" />
+        <button class="btn primary" id="reportBtn">🧾 Tạo báo cáo</button>
+        <button class="btn danger" id="resetSessionBtn">↺ Đổi nhân viên/khu</button>
+      </div>
+    </header>
+
+    <section class="panel control-panel">
+      <div>
+        <div class="field-row">
+          <div class="field">
+            <label>Họ tên đầy đủ nhân viên</label>
+            <input class="input" id="employeeName" placeholder="VD: Nguyễn Văn A" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label>Ngày checklist</label>
+            <input class="input" type="date" id="workDate" />
+          </div>
+        </div>
+        <div class="hint">Nhập họ tên, chọn khu trực và bấm “Tham gia checklist”. Nhiều nhân viên có thể cùng tham gia một khu trong ngày.</div>
+        <div class="control-actions">
+          <button class="btn primary" id="joinBtn">✅ Tham gia checklist khu đã chọn</button>
+          <button class="btn good" id="syncServerBtn">☁️ Gửi & Đồng bộ Google Sheets</button>
+        </div>
+      </div>
+      <div>
+        <div class="mode-grid">
+          <label class="mode-card">
+            <input type="radio" name="saveMode" value="single" />
+            <span>
+              <span class="mode-title">Lưu trực tuyến tức thì</span>
+              <span class="mode-desc">Mỗi lần tick hoặc sửa ghi chú sẽ lưu ngay lên Google Sheets. Thích hợp khi mạng ổn định.</span>
+            </span>
+          </label>
+          <label class="mode-card">
+            <input type="radio" name="saveMode" value="batch" checked />
+            <span>
+              <span class="mode-title">Chế độ Lưu hàng loạt</span>
+              <span class="mode-desc">Tick nhiều việc thoải mái, sau đó bấm nút "Gửi & Đồng bộ" để cập nhật lên Sheets một lần.</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Zone Completion Board -->
+    <section class="area-board" id="areaBoard"></section>
+
+    <section class="layout">
+      <main class="panel checklist-card" id="mainChecklist">
+        <div class="join-placeholder" id="joinPlaceholder">
+          <h2>Chọn khu và khai báo nhân viên để bắt đầu</h2>
+          <p>Hệ thống kết nối trực tiếp với Google Sheets. Hãy chọn khu A, B, C hoặc D&amp;E bên trên, nhập tên rồi bấm tham gia checklist.</p>
+          <button class="btn primary" id="quickGuideBtn">Xem hướng dẫn lần đầu</button>
+        </div>
+        <div id="checklistContent" class="hidden">
+          <p class="print-title" id="printTitle"></p>
+          <div class="section-tabs" id="phaseTabs"></div>
+          
+          <div class="summary-strip" id="summaryStrip"></div>
+          
+          <div class="pending-banner" id="pendingBanner">
+            <span id="pendingText">Có thay đổi chưa được lưu lên Google Sheets.</span>
+            <button class="btn warn" id="savePendingBtn">☁️ Đồng bộ lên Google Sheets ngay</button>
+          </div>
+          
+          <div class="table-wrapper">
+            <table class="check-table">
+              <thead>
+                <tr>
+                  <th style="width:58px;text-align:center">STT</th>
+                  <th>Hạng mục công việc</th>
+                  <th style="width:112px;text-align:center">Hoàn thành</th>
+                  <th style="width:220px">Ghi chú nội bộ</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <aside class="side">
+        <!-- Operational Guidelines -->
+        <section class="panel guide">
+          <h2>Ghi chú vận hành</h2>
+          <div class="guide-block"><b>Đầu ca (15h &amp; 17h):</b>
+            <ul>
+              <li>Vệ sinh khu vực chung, setup bàn ghế đúng tiêu chuẩn và lịch đặt bàn.</li>
+              <li>Kiểm tra thông tin bàn đặt, món hết/ngừng bán, ưu tiên bán và khuyến mãi.</li>
+              <li>Tick checklist nhỏ để tự động hoàn thành hạng mục tổng.</li>
+            </ul>
+          </div>
+          <div class="guide-block"><b>Cuối ca (Xuống ca 1 &amp; Xuống ca cuối):</b>
+            <ul>
+              <li>Nhóm ca 1 hỗ trợ dọn dẹp, lau bàn ghế, chuẩn bị vật tư cho ca sau.</li>
+              <li>Nhóm kết ca vệ sinh menu, xô đá, quạt, đổ rác và vệ sinh WC.</li>
+              <li>Quay video/chụp ảnh bàn giao, gửi báo cáo và chấm công ra về.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Supplies Request Form -->
+        <section class="panel supply">
+          <h2>Cấp vật tư cho khu <span id="supplyArea">____</span></h2>
+          <div class="supply-date">Ngày <span id="supplyDate">__/__/20__</span></div>
+          <div class="supply-list">
+            <label><input type="checkbox" data-supply="du_dung"> Đủ dùng</label>
+            <label><input type="checkbox" data-supply="khan_giay"> Khăn giấy</label>
+            <label><input type="checkbox" data-supply="ong_hut"> Ống hút</label>
+            <label><input type="checkbox" data-supply="diem"> Diêm</label>
+            <label><input type="checkbox" data-supply="tam"> Tăm</label>
+            <label><input type="checkbox" data-supply="xien_tre"> Xiên tre</label>
+            <label><input type="checkbox" data-supply="bao_tay"> Bao tay</label>
+          </div>
+          <div class="supply-wide">
+            <label><input type="checkbox" data-supply="bao_rac"> Bao rác</label>
+            <div class="supply-sub">
+              <label><input type="checkbox" data-supply="bao_rac_den"> Đen kín</label>
+              <label><input type="checkbox" data-supply="bao_rac_dai"> Đại</label>
+              <label><input type="checkbox" data-supply="bao_rac_trung"> Trung</label>
+              <label><input type="checkbox" data-supply="bao_rac_tieu"> Tiểu</label>
+            </div>
+            <label><input type="checkbox" data-supply="bich_mang_ve"> Bọc/bịch mang về</label>
+            <div class="supply-sub">
+              <label><input type="checkbox" data-supply="bich_lau"> Lẩu</label>
+              <label><input type="checkbox" data-supply="bich_3kg"> 3kg</label>
+              <label><input type="checkbox" data-supply="bich_5kg"> 5kg</label>
+            </div>
+            <label><input type="checkbox" data-supply="hop_mang_ve"> Hộp mang về</label>
+            <div class="supply-sub">
+              <label><input type="checkbox" data-supply="hop_xop"> Xốp</label>
+              <label><input type="checkbox" data-supply="hop_nhua"> Nhựa nắp rời</label>
+            </div>
+          </div>
+          <textarea class="textarea" id="supplyNote" placeholder="Ghi chú số lượng cần cấp thêm, tình trạng vật tư..."></textarea>
+          <div class="action-row">
+            <button class="btn good" id="saveSupplyBtn">💾 Lưu đề xuất vật tư</button>
+          </div>
+          <div class="hint" id="supplyMeta">Số lượng cấp vừa phải, đủ dùng trong ca. Nếu vẫn đủ dùng, chọn “Đủ dùng”.</div>
+        </section>
+
+        <!-- Signature Confirmation -->
+        <section class="panel signature">
+          <h2>Xác nhận bàn giao</h2>
+          <div class="sig-grid">
+            <div class="sig-box"><label>Phụ trách nhận ca</label><input class="input" id="sigReceive" placeholder="Ký tên / ghi rõ họ tên" /></div>
+            <div class="sig-box"><label>Phụ trách giao ca</label><input class="input" id="sigHandover" placeholder="Ký tên / ghi rõ họ tên" /></div>
+            <div class="sig-box"><label>Quản lý xác nhận</label><input class="input" id="sigManager" placeholder="Ký tên / ghi rõ họ tên" /></div>
+          </div>
+          <button class="btn good" id="saveSigBtn" style="margin-top:12px;width:100%">💾 Lưu xác nhận bàn giao</button>
+        </section>
+      </aside>
+    </section>
+  </div>
+
+  <!-- Help / Onboarding Modal -->
+  <div class="modal-backdrop" id="guideModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Hướng dẫn sử dụng Webapp Checklist</h2>
+        <button class="close-x" data-close-modal>Đóng</button>
+      </div>
+      <div class="modal-body">
+        <div class="steps">
+          <div class="step">
+            <b>1. Khai báo nhân viên & Ngày</b>
+            <p>Nhập họ tên đầy đủ, chọn ngày làm việc (mặc định hôm nay). Thông tin dùng để lưu vết lịch sử checklist.</p>
+          </div>
+          <div class="step">
+            <b>2. Chọn Khu Trực & Tham Gia</b>
+            <p>Chọn khu trực (A, B, C, D&E) trên bảng màu rồi bấm "Tham gia checklist". Tiến độ khu trực sẽ được đồng bộ trực tiếp.</p>
+          </div>
+          <div class="step">
+            <b>3. Chế Độ Lưu Trữ</b>
+            <p>Nên chọn "Lưu hàng loạt" để tick chọn tất cả công việc rồi bấm nút đồng bộ lên Google Sheets 1 lần để tiết kiệm lưu lượng.</p>
+          </div>
+          <div class="step">
+            <b>4. Checklist Con Tự Động</b>
+            <p>Hạng mục tổng sẽ tự động đánh dấu hoàn thành khi bạn tick đủ tất cả các checklist nhỏ bên dưới.</p>
+          </div>
+          <div class="step">
+            <b>5. Đề Xuất Vật Tư & Ký Tên</b>
+            <p>Ghi chú các hư hỏng hoặc đề xuất vật tư cần cấp, ký nhận/giao ca để báo cáo quản lý.</p>
+          </div>
+          <div class="step">
+            <b>6. Tạo Báo Cáo Hình Ảnh</b>
+            <p>Tải ảnh PNG tổng hợp tiến độ 4 khu hoặc khu đang chọn để gửi nhanh qua Zalo/nhóm làm việc.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
+          <button class="btn primary" id="understandGuideBtn">Tôi đã hiểu và bắt đầu sử dụng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report / Image Export Modal -->
+  <div class="modal-backdrop report-modal" id="reportModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Báo cáo hình ảnh tiến độ checklist</h2>
+        <button class="close-x" data-close-report-modal>Đóng</button>
+      </div>
+      <div class="modal-body">
+        <div class="report-toolbar">
+          <div class="hint">Xem trước và tải ảnh báo cáo PNG gửi nhóm giám sát/quản lý.</div>
+          <div class="pill" id="reportMetaPill">Khu ____ · __/__/20__</div>
+        </div>
+        <div class="report-options">
+          <div class="report-box">
+            <h3>Tùy chỉnh nội dung</h3>
+            <div class="report-option-grid">
+              <label class="report-option">
+                <input type="radio" name="reportScope" value="current" checked>
+                <span><b>Báo cáo khu đang chọn</b><br><small>Tạo ảnh tiến độ riêng cho khu đang làm.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="radio" name="reportScope" value="all">
+                <span><b>Tổng hợp cả 4 khu</b><br><small>Xem nhanh trạng thái checklist toàn bộ nhà hàng.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="radio" name="reportMode" value="completed" checked>
+                <span><b>Chỉ việc đã hoàn thành</b><br><small>Ẩn các việc chưa làm, giúp ảnh báo cáo ngắn gọn.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="radio" name="reportMode" value="all">
+                <span><b>Hiển thị đầy đủ checklist</b><br><small>Báo cáo chi tiết mọi hạng mục công việc.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportShowSubtasks" checked>
+                <span><b>Hiển thị checklist con</b><br><small>Kèm theo trạng thái các checklist nhỏ.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportIncludeSupply" checked>
+                <span><b>Kèm đề xuất vật tư</b><br><small>Hiển thị các vật tư cần cấp trong ngày.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportIncludeSignatures" checked>
+                <span><b>Kèm chữ ký bàn giao</b><br><small>Hiển thị họ tên phụ trách bàn giao ca.</small></span>
+              </label>
+              <label class="report-option">
+                <input type="checkbox" id="reportIncludeEmptyGroups">
+                <span><b>Hiển thị nhóm rỗng</b><br><small>Giữ nguyên đầy đủ phân mục dù chưa làm việc nào.</small></span>
+              </label>
+            </div>
+          </div>
+          <div class="report-box">
+            <h3>Tải ảnh báo cáo</h3>
+            <p class="hint" style="margin-bottom:12px">Hãy lưu/đồng bộ các thay đổi lên Google Sheets trước khi tải ảnh để đảm bảo dữ liệu là mới nhất.</p>
+            <div class="report-download-actions">
+              <button class="btn" id="refreshReportBtn">🔄 Làm mới xem trước</button>
+              <button class="btn primary" id="downloadReportBtn">🖼️ Tải ảnh PNG báo cáo</button>
+            </div>
+          </div>
+        </div>
+        <div class="report-preview-wrap">
+          <div class="report-preview-scroller" id="reportPreview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Local libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <?!= include('Scripts'); ?>
+</body>
+</html>

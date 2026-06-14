@@ -1,0 +1,1308 @@
+<script>
+  // Configuration keys
+  const AREA_CODES = ['A', 'B', 'C', 'D&E'];
+  const STORAGE_KEY = 'kg_ops_checklist_v7';
+  const SESSION_KEY = 'kg_ops_checklist_session_v7';
+  const ONBOARD_KEY = 'kg_ops_checklist_onboarded_v7';
+  const API_URL_KEY = 'kg_ops_checklist_api_url';
+
+  // Default checklist definition fallback (if sheet is inaccessible or offline)
+  const DEFAULT_CHECKLIST = [
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'I. Vệ sinh & setup khu trực', items:[
+      {no:1, id:'start_clean_floor', title:'Vệ sinh sàn & Khu vực chung', text:'Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.', subitems:[
+        {id:'floor_sweep',text:'Quét sạch tổng thể sàn khu trực'},{id:'floor_mop',text:'Lau sàn, xử lý vết bẩn dễ thấy'},{id:'gate_clean',text:'Quét dọn sạch khu vực cổng ra vào'},{id:'corner_check',text:'Kiểm tra góc khuất, gầm/tủ gần khu trực'}
+      ]},
+      {no:2, id:'start_table_setup', title:'Bàn ghế', text:'Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.', subitems:[
+        {id:'table_wipe',text:'Lau sạch mặt bàn'},{id:'chair_wipe',text:'Lau sạch ghế và sắp xếp ngay ngắn'},{id:'tableware_ready',text:'Setup đủ chén, đũa, muỗng, ly'},{id:'reservation_layout',text:'Bố trí bàn ghế đúng lịch đặt bàn'}
+      ]},
+      {no:3, id:'start_background', title:'Background tiệc', text:'Lau bụi background/vật dụng trang trí.', subitems:[
+        {id:'bg_dust',text:'Lau bụi background và vật dụng trang trí'},{id:'decor_check',text:'Kiểm tra hoa/nến/decor nếu có'},{id:'decor_report',text:'Báo quản lý nếu decor hỏng, thiếu hoặc lệch tông'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'II. Công cụ & Vật tư', items:[
+      {no:4, id:'start_tools_check', title:'Diêm/bật lửa, khăn giấy, hộp/bịch mang về', text:'Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.', subitems:[
+        {id:'match_lighter',text:'Kiểm tra diêm/bật lửa'},{id:'tissue_ready',text:'Kiểm tra khăn giấy'},{id:'takeaway_ready',text:'Kiểm tra hộp/bịch mang về'},{id:'supply_shortage',text:'Ghi nhận vật tư thiếu để đề xuất cấp thêm'}
+      ]},
+      {no:5, id:'start_station_arrange', title:'Sắp xếp', text:'Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.', subitems:[
+        {id:'cabinet_tidy',text:'Sắp xếp gọn tủ đồ khu trực'},{id:'station_ready',text:'Bố trí trạm đồ dùng dự phòng'},{id:'tool_easy_access',text:'Đặt dụng cụ ở vị trí dễ lấy khi đông khách'},{id:'station_clean',text:'Kiểm tra trạm không bừa bộn, không lẫn đồ hư'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'III. Bàn đặt trước', items:[
+      {no:6, id:'start_reserved_setup', title:'Setup bàn đặt', text:'Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.', subitems:[
+        {id:'reserved_count',text:'Kiểm tra đủ số lượng bàn/ghế'},{id:'reserved_theme',text:'Đúng tông màu/trang trí theo yêu cầu'},{id:'reserved_need',text:'Đúng nhu cầu tiệc: sinh nhật, liên hoan, gia đình...'},{id:'reserved_food_drink',text:'Nắm món/đồ uống đặt trước nếu có'}
+      ]},
+      {no:7, id:'start_reserved_mark', title:'Đánh dấu', text:'Cắm khăn giấy nhận diện hoặc đặt bảng “Bàn đặt trước”.', subitems:[
+        {id:'reserved_tissue',text:'Cắm khăn giấy nhận diện bàn đặt trước'},{id:'reserved_sign',text:'Đặt bảng “Bàn đặt trước” nếu cần'},{id:'reserved_position',text:'Kiểm tra đúng vị trí, tránh nhầm bàn'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 15H: SETUP BÀN', section:'IV. Bàn giao đầu ca', items:[
+      {no:8, id:'start_handover_receive', title:'Nhận bàn giao', text:'Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.', subitems:[
+        {id:'handover_assets',text:'Kiểm tra tài sản/dụng cụ được bàn giao'},{id:'handover_info',text:'Nắm thông tin tồn đọng từ ca trước'},{id:'handover_issue',text:'Phản hồi sai sót nếu có'},{id:'handover_report',text:'Báo cáo lại cho tổ trưởng/quản lý'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 17H: RÀ SOÁT & HOÀN THIỆN', section:'V. Kiểm tra chéo & Bổ sung', items:[
+      {no:9, id:'mid_double_check', title:'Double-check ca 15h', text:'Hoàn thành các việc tồn đọng của đầu ca.', subitems:[
+        {id:'double_clean',text:'Rà soát vệ sinh khu vực'},{id:'double_setup',text:'Rà soát setup bàn ghế/dụng cụ'},{id:'double_reserved',text:'Rà soát bàn đặt trước'},{id:'double_pending',text:'Xử lý việc tồn đọng hoặc báo quản lý'}
+      ]},
+      {no:10, id:'mid_table_ready', title:'Chuẩn bị cho bàn ăn', text:'Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.', subitems:[
+        {id:'sauce_ready',text:'Chuẩn bị/kiểm tra nước chấm'},{id:'cold_towel_ready',text:'Chuẩn bị/kiểm tra khăn lạnh'},{id:'pre_drink_ready',text:'Kiểm tra đồ uống đặt trước'},{id:'table_extra_ready',text:'Bổ sung dụng cụ nếu thiếu'}
+      ]},
+      {no:11, id:'mid_devices_on', title:'Bật các thiết bị cần thiết', text:'Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.', subitems:[
+        {id:'light_hall',text:'Bật đèn sảnh/khu vực phục vụ'},{id:'light_decor',text:'Bật đèn trang trí'},{id:'fan_ac',text:'Bật quạt/máy lạnh phù hợp'},{id:'device_check',text:'Kiểm tra thiết bị hoạt động bình thường'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 17H: RÀ SOÁT & HOÀN THIỆN', section:'VI. Thông tin và kế hoạch trong ngày', items:[
+      {no:12, id:'mid_daily_info', title:'Nắm thông tin', text:'Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.', subitems:[
+        {id:'info_reservation',text:'Nắm bàn đặt mới trong ngày'},{id:'info_out_of_stock',text:'Nắm món hết hàng/ngừng bán'},{id:'info_priority',text:'Nắm món ưu tiên bán'},{id:'info_promo',text:'Nắm chương trình khuyến mãi/ưu đãi'}
+      ]},
+      {no:13, id:'mid_assignment', title:'Phân công', text:'Điền tên vào bảng phân công vị trí trực.', subitems:[
+        {id:'assign_name',text:'Điền tên vào bảng phân công khu trực'},{id:'assign_position',text:'Nắm rõ vị trí/bàn phụ trách'},{id:'assign_support',text:'Nắm nhân sự hỗ trợ khi đông khách'}
+      ]}
+    ]},
+    { phase:'CHECKLIST ĐẦU CA', shift:'CA 17H: RÀ SOÁT & HOÀN THIỆN', section:'VII. Sẵn sàng phục vụ', items:[
+      {no:14, id:'mid_uniform', title:'Đảm bảo tác phong', text:'Đúng đồng phục, đeo bảng tên.', subitems:[
+        {id:'uniform_ok',text:'Đúng đồng phục'},{id:'name_tag_ok',text:'Đeo bảng tên'},{id:'appearance_ok',text:'Tác phong gọn gàng, lịch sự'}
+      ]},
+      {no:15, id:'mid_service_ready', title:'Sẵn sàng phục vụ', text:'Về đúng khu vực phân công, chuẩn bị đầy đủ để sẵn sàng phục vụ khách.', subitems:[
+        {id:'area_ready',text:'Có mặt đúng khu vực phân công'},{id:'observe_ready',text:'Quan sát khu vực, sẵn sàng hỗ trợ khách'},{id:'service_tools_ready',text:'Chuẩn bị dụng cụ cần thiết để phục vụ nhanh'}
+      ]}
+    ]},
+    { phase:'CHECKLIST CUỐI CA', shift:'XUỐNG CA LẦN 1', section:'VIII. Xuống ca lần 1 (21h - 22h)', items:[
+      {no:16, id:'end1_prepare_next', title:'Thu dọn và chuẩn bị cho ca sau', text:'Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.', subitems:[
+        {id:'end1_station_clear',text:'Cất dọn trạm đồ dùng dự phòng'},{id:'end1_tool_prepare',text:'Chuẩn bị thêm đồ dùng cho nhóm sau'},{id:'end1_table_chair',text:'Lau bàn ghế khu vực trống khách'},{id:'end1_support',text:'Hỗ trợ giảm tải cho nhóm còn lại'}
+      ]},
+      {no:17, id:'end1_reserved_support', title:'Hỗ trợ sắp xếp các bàn đặt trước', text:'Ưu tiên sắp xếp các khu vực trống khách.', subitems:[
+        {id:'end1_empty_area',text:'Ưu tiên xử lý khu vực đã trống khách'},{id:'end1_next_reserved',text:'Sắp xếp bàn đặt trước nếu có'},{id:'end1_move_table',text:'Đổi bàn/ghế đúng nhu cầu nếu cần'}
+      ]},
+      {no:18, id:'end1_clean_empty', title:'Vệ sinh', text:'Quét dọn, lau gầm các bàn trống khách.', subitems:[
+        {id:'end1_sweep',text:'Quét dọn khu vực trống khách'},{id:'end1_under_table',text:'Lau gầm bàn/gầm ghế'},{id:'end1_small_trash',text:'Thu gom rác nhỏ trong khu'}
+      ]},
+      {no:19, id:'end1_handover_support', title:'Hỗ trợ bàn giao', text:'Thông tin các công việc đã xử lý, hỗ trợ kiểm tra đồ dùng.', subitems:[
+        {id:'end1_work_done',text:'Thông tin việc đã xử lý'},{id:'end1_tool_check',text:'Hỗ trợ kiểm tra đồ dùng'},{id:'end1_note_next',text:'Ghi chú việc còn lại cho nhóm sau'}
+      ]}
+    ]},
+    { phase:'CHECKLIST CUỐI CA', shift:'XUỐNG CA SAU CÙNG', section:'IX. Xuống ca sau cùng (sau 23h hoặc hết khách)', items:[
+      {no:20, id:'end_final_clean', title:'Vệ sinh & Thu dọn', text:'Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.', subitems:[
+        {id:'final_menu',text:'Vệ sinh menu'},{id:'final_ice_bucket',text:'Vệ sinh xô đá'},{id:'final_shaker',text:'Vệ sinh thùng lắc/xẻ'},{id:'final_setup',text:'Thu dọn setup và lau mặt ghế còn lại'},{id:'final_floor',text:'Quét, lau phần sàn nhà còn lại'},{id:'final_trash',text:'Thu gom rác, đổ rác, vệ sinh thùng rác/hót rác'}
+      ]},
+      {no:21, id:'end_final_area_arrange', title:'Sắp xếp khu trực', text:'Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.', subitems:[
+        {id:'final_reserved',text:'Sắp xếp bàn đặt trước còn lại'},{id:'final_return_tools',text:'Gửi trả thiết bị về đúng vị trí'},{id:'final_fan_light',text:'Sắp xếp gọn quạt/đèn'},{id:'final_background',text:'Sắp xếp khung background/decor đúng vị trí'}
+      ]},
+      {no:22, id:'end_final_tools', title:'Kiểm tra thiết bị & khu vực', text:'Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.', subitems:[
+        {id:'final_awning',text:'Kéo/đóng mái che, bạt che mưa nếu cần'},{id:'final_photo',text:'Quay video/chụp ảnh khu trực'},{id:'final_power',text:'Tắt thiết bị điện/đèn chiếu sáng'},{id:'final_fan_ac_off',text:'Tắt quạt/máy lạnh khu vực'}
+      ]},
+      {no:23, id:'end_final_report', title:'Báo cáo và đóng ca', text:'Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.', subitems:[
+        {id:'final_damage',text:'Báo cáo hư hỏng trong ca'},{id:'final_supply_report',text:'Báo cáo vật tư cần cấp cho ca sau'},{id:'final_tool_count',text:'Báo cáo số lượng đồ dùng nếu cần'},{id:'final_wash_area',text:'Tắt điện khu rửa chén'},{id:'final_wc',text:'Tắt đèn/máy lạnh nhà vệ sinh'},{id:'final_clock_out',text:'Chấm công và ra về'}
+      ]}
+    ]}
+  ];
+
+  // Global variables
+  let db = loadDB();
+  let session = loadSession();
+  let selectedArea = session.area || null;
+  let activePhase = 'ALL';
+  let pending = {}; // Buffers changes before saving to local & sync server
+  let checklist = DEFAULT_CHECKLIST; // Loaded dynamically from GAS
+  let flatItems = [];
+
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  // Handle Apps Script Webapp URL Configuration
+  let gasApiUrl = '';
+  function initApiUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramApi = urlParams.get('api');
+    if (paramApi) {
+      localStorage.setItem(API_URL_KEY, paramApi);
+      gasApiUrl = paramApi;
+    } else {
+      gasApiUrl = localStorage.getItem(API_URL_KEY) || '';
+    }
+  }
+
+  // API Call Dispatcher
+  async function callAPI(methodName, args = []) {
+    // 1. If running natively in Google Apps Script Environment
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler(res => {
+            if (res && res.success) resolve(res.data);
+            else reject(new Error(res ? res.error : "Unknown error"));
+          })
+          .withFailureHandler(err => reject(err))
+          [methodName](...args);
+      });
+    }
+
+    // 2. If external hosting, call deployed API URL
+    initApiUrl();
+    if (!gasApiUrl) {
+      console.warn("API URL not configured. Working in offline/local-only mode.");
+      throw new Error("API_NOT_CONFIGURED");
+    }
+
+    try {
+      // Use text/plain to avoid preflight OPTIONS request on Apps Script
+      const response = await fetch(gasApiUrl, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({ method: methodName, args: args })
+      });
+      const result = await response.json();
+      if (result.success) {
+        return result.data;
+      }
+      throw new Error(result.error || "Server responded with error status");
+    } catch(err) {
+      console.error("API Fetch Error:", err);
+      throw err;
+    }
+  }
+
+  // Utilities
+  function todayISO() {
+    const d = new Date();
+    const off = d.getTimezoneOffset();
+    return new Date(d.getTime() - off * 60000).toISOString().slice(0, 10);
+  }
+  
+  function formatDateVN(iso) {
+    if (!iso) return '__/__/20__';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function safeId(text) {
+    return (text || '').trim().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_|_$/g, '');
+  }
+
+  function loadDB() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { version: 7, days: {} };
+    } catch (e) {
+      return { version: 7, days: {} };
+    }
+  }
+
+  function saveDB() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  }
+
+  function loadSession() {
+    try {
+      return JSON.parse(localStorage.getItem(SESSION_KEY)) || { name: '', area: '' };
+    } catch (e) {
+      return { name: '', area: '' };
+    }
+  }
+
+  function saveSession() {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  }
+
+  function currentDate() {
+    return $('#workDate').value || todayISO();
+  }
+
+  function ensureDay(dateKey) {
+    if (!db.days[dateKey]) {
+      db.days[dateKey] = { createdAt: new Date().toISOString(), areas: {} };
+    }
+    AREA_CODES.forEach(area => {
+      if (!db.days[dateKey].areas[area]) {
+        db.days[dateKey].areas[area] = {
+          participants: [],
+          items: {},
+          supply: {},
+          signatures: {}
+        };
+      }
+    });
+    return db.days[dateKey];
+  }
+
+  function getAreaData(area = selectedArea) {
+    return ensureDay(currentDate()).areas[area];
+  }
+
+  function getSaveMode() {
+    return $('input[name="saveMode"]:checked').value;
+  }
+
+  function toast(msg, type = 'info') {
+    const el = $('#toast');
+    el.textContent = msg;
+    
+    // Style toast by type
+    if (type === 'success') {
+      el.style.borderLeft = "5px solid var(--green)";
+    } else if (type === 'error') {
+      el.style.borderLeft = "5px solid var(--red)";
+    } else {
+      el.style.borderLeft = "5px solid var(--blue-2)";
+    }
+    
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // Initialize
+  async function init() {
+    initApiUrl();
+    $('#workDate').value = todayISO();
+    $('#employeeName').value = session.name || '';
+    ensureDay(currentDate());
+    bindEvents();
+    
+    // Load config and sync date data
+    await syncInitData();
+
+    if (!localStorage.getItem(ONBOARD_KEY)) {
+      openGuide();
+    }
+  }
+
+  // Load configuration and data from Server
+  async function syncInitData() {
+    const dateKey = currentDate();
+    toast('Đang nạp dữ liệu từ Google Sheets...', 'info');
+    
+    try {
+      const serverData = await callAPI('getAppInitData', [dateKey]);
+      if (serverData && serverData.checklist) {
+        checklist = serverData.checklist;
+      }
+      
+      flatItems = checklist.flatMap(group => group.items.map(item => ({ ...item, group })));
+      
+      // Merge server progress data into local IndexedDB/LocalStorage DB
+      if (serverData && serverData.states) {
+        const day = ensureDay(dateKey);
+        AREA_CODES.forEach(area => {
+          if (serverData.states[area]) {
+            day.areas[area] = serverData.states[area];
+          }
+        });
+        saveDB();
+      }
+      toast('Nạp dữ liệu trực tuyến thành công!', 'success');
+    } catch(err) {
+      console.warn("Failed to load server data:", err);
+      // Fallback to local flatItems mapping
+      flatItems = checklist.flatMap(group => group.items.map(item => ({ ...item, group })));
+      
+      if (err.message === 'API_NOT_CONFIGURED') {
+        toast('Đang chạy chế độ ngoại tuyến (Chưa cài API URL)', 'info');
+      } else {
+        toast('Không kết nối được Sheets. Đang dùng dữ liệu ngoại tuyến.', 'error');
+      }
+    }
+    
+    renderAll();
+  }
+
+  function bindEvents() {
+    // Date & UI filter triggers
+    $('#workDate').addEventListener('change', async () => {
+      pending = {};
+      ensureDay(currentDate());
+      await syncInitData();
+    });
+    
+    $('#joinBtn').addEventListener('click', joinChecklist);
+    $('#savePendingBtn').addEventListener('click', () => syncStateToServer(true));
+    $('#syncServerBtn').addEventListener('click', () => syncStateToServer(true));
+    
+    // Guide modal
+    $('#helpBtn').addEventListener('click', openGuide);
+    $('#quickGuideBtn').addEventListener('click', openGuide);
+    $('#understandGuideBtn').addEventListener('click', () => {
+      localStorage.setItem(ONBOARD_KEY, '1');
+      closeGuide();
+    });
+    $$('[data-close-modal]').forEach(b => b.addEventListener('click', closeGuide));
+    $('#guideModal').addEventListener('click', e => { if (e.target.id === 'guideModal') closeGuide(); });
+
+    // Print, JSON Import/Export
+    $('#printBtn').addEventListener('click', () => window.print());
+    $('#exportBtn').addEventListener('click', exportData);
+    $('#importBtn').addEventListener('click', () => $('#importFileInput').click());
+    $('#importFileInput').addEventListener('change', importData);
+
+    // Reset session
+    $('#resetSessionBtn').addEventListener('click', () => {
+      if (Object.keys(pending).length && !confirm('Bạn có thay đổi chưa đồng bộ. Vẫn muốn đăng xuất?')) return;
+      session = { name: '', area: '' };
+      selectedArea = null;
+      pending = {};
+      saveSession();
+      $('#employeeName').value = '';
+      renderAll();
+      toast('Đã đăng xuất phiên làm việc.', 'success');
+    });
+
+    // Side cards save triggers
+    $('#saveSupplyBtn').addEventListener('click', saveSupply);
+    $('#saveSigBtn').addEventListener('click', saveSignatures);
+
+    // Radio option switches
+    $$('input[name="saveMode"]').forEach(r => r.addEventListener('change', () => {
+      pending = {};
+      renderChecklist();
+      toast('Đã chuyển chế độ lưu trữ.', 'success');
+    }));
+
+    // Report modal
+    $('#reportBtn').addEventListener('click', openReportModal);
+    $('#refreshReportBtn').addEventListener('click', renderReportPreview);
+    $('#downloadReportBtn').addEventListener('click', downloadReportImage);
+    $$('[data-close-report-modal]').forEach(b => b.addEventListener('click', closeReportModal));
+    $('#reportModal').addEventListener('click', e => { if (e.target.id === 'reportModal') closeReportModal(); });
+    
+    $$('input[name="reportMode"], input[name="reportScope"]').forEach(r => r.addEventListener('change', renderReportPreview));
+    ['#reportShowSubtasks', '#reportIncludeSupply', '#reportIncludeSignatures', '#reportIncludeEmptyGroups'].forEach(sel => {
+      $(sel).addEventListener('change', renderReportPreview);
+    });
+
+    // Exit Guard
+    window.addEventListener('beforeunload', e => {
+      if (Object.keys(pending).length) {
+        e.preventDefault();
+        e.returnValue = 'Bạn chưa đồng bộ tiến độ lên Google Sheets!';
+      }
+    });
+  }
+
+  function openGuide() { $('#guideModal').classList.add('show'); }
+  function closeGuide() { $('#guideModal').classList.remove('show'); }
+
+  // Join Zone checklist
+  function joinChecklist() {
+    const name = $('#employeeName').value.trim();
+    if (!name) {
+      toast('Vui lòng nhập họ tên đầy đủ.', 'error');
+      $('#employeeName').focus();
+      return;
+    }
+    if (!selectedArea) {
+      toast('Vui lòng chọn một khu trực bên dưới.', 'error');
+      return;
+    }
+    const areaData = getAreaData(selectedArea);
+    const key = safeId(name);
+    if (!areaData.participants.some(p => p.key === key)) {
+      areaData.participants.push({ key, name, joinedAt: new Date().toISOString() });
+    }
+    session = { name, area: selectedArea };
+    saveSession();
+    saveDB();
+    renderAll();
+    toast(`${name} đã tham gia checklist khu ${selectedArea}.`, 'success');
+    
+    // Automatically trigger a background update of participants to the server
+    if (getSaveMode() === 'single') {
+      syncStateToServer(false);
+    }
+  }
+
+  // Checklist computation helpers
+  function itemHasSubtasks(item) {
+    return Array.isArray(item.subitems) && item.subitems.length > 0;
+  }
+
+  function buildSubchecks(item, checked) {
+    const o = {};
+    (item.subitems || []).forEach(sub => o[sub.id] = !!checked);
+    return o;
+  }
+
+  function normalizeItemState(item, raw = {}) {
+    const subitems = item.subitems || [];
+    let subchecks = { ...(raw.subchecks || {}) };
+    if (subitems.length && raw.checked && !raw.subchecks) {
+      subchecks = buildSubchecks(item, true);
+    }
+    const checked = subitems.length ? subitems.every(sub => !!subchecks[sub.id]) : !!raw.checked;
+    return {
+      checked,
+      note: raw.note || '',
+      subchecks,
+      by: raw.by || '',
+      at: raw.at || ''
+    };
+  }
+
+  function getMergedItemState(item) {
+    const saved = normalizeItemState(item, (getAreaData().items || {})[item.id] || {});
+    if (Object.prototype.hasOwnProperty.call(pending, item.id)) {
+      const p = pending[item.id] || {};
+      const subchecks = itemHasSubtasks(item) ? { ...saved.subchecks, ...(p.subchecks || {}) } : {};
+      const checked = itemHasSubtasks(item) ? item.subitems.every(sub => !!subchecks[sub.id]) : !!p.checked;
+      return {
+        ...saved,
+        ...p,
+        subchecks,
+        checked,
+        note: (p.note ?? saved.note ?? '')
+      };
+    }
+    return saved;
+  }
+
+  function isItemCompleteForArea(areaData, item) {
+    return normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked;
+  }
+
+  function makeParentToggleState(item, checked, note = '') {
+    const subchecks = itemHasSubtasks(item) ? buildSubchecks(item, checked) : {};
+    const finalChecked = itemHasSubtasks(item) ? item.subitems.every(sub => !!subchecks[sub.id]) : !!checked;
+    return {
+      checked: finalChecked,
+      subchecks,
+      note,
+      by: session.name,
+      at: new Date().toISOString()
+    };
+  }
+
+  function makeSubToggleState(item, subId, checked, note = '') {
+    const cur = getMergedItemState(item);
+    const subchecks = { ...cur.subchecks, [subId]: !!checked };
+    const finalChecked = item.subitems.every(sub => !!subchecks[sub.id]);
+    return {
+      checked: finalChecked,
+      subchecks,
+      note,
+      by: session.name,
+      at: new Date().toISOString()
+    };
+  }
+
+  function countSubDone(item, state) {
+    return (item.subitems || []).filter(sub => !!state.subchecks?.[sub.id]).length;
+  }
+
+  // Render layouts
+  function renderAll() {
+    renderAreaBoard();
+    renderChecklist();
+    renderSupply();
+    renderSignatures();
+  }
+
+  function renderAreaBoard() {
+    const day = ensureDay(currentDate());
+    $('#areaBoard').innerHTML = AREA_CODES.map(area => {
+      const areaData = day.areas[area];
+      const done = flatItems.filter(item => isItemCompleteForArea(areaData, item)).length;
+      const total = flatItems.length;
+      const pct = total ? Math.round(done / total * 100) : 0;
+      const staff = areaData.participants.length 
+        ? areaData.participants.map(p => `<div class="staff-chip"><span>👤 ${escapeHtml(p.name)}</span><small>${timeOnly(p.joinedAt)}</small></div>`).join('')
+        : `<div class="empty">Chưa có nhân viên</div>`;
+        
+      return `<article class="area-card ${selectedArea === area ? 'active' : ''}" data-area="${area}">
+        <div class="area-head">
+          <div class="area-title-wrap">
+            <div class="area-title">Khu ${area}</div>
+            <span class="area-selected-badge">✓ Đang chọn</span>
+          </div>
+          <span class="pill">${pct}% xong</span>
+        </div>
+        <div class="progress-line"><span style="width:${pct}%"></span></div>
+        <div class="hint"><b>${areaData.participants.length}</b> NV trực · <b>${done}/${total}</b> hạng mục</div>
+        <div class="staff-list">${staff}</div>
+      </article>`;
+    }).join('');
+
+    $$('.area-card').forEach(card => card.addEventListener('click', () => {
+      if (Object.keys(pending).length && !confirm('Bạn có thay đổi chưa đồng bộ. Vẫn muốn chuyển khu?')) return;
+      selectedArea = card.dataset.area;
+      if (session.name) {
+        session.area = selectedArea;
+        saveSession();
+      }
+      pending = {};
+      renderAll();
+      toast(`Đã chọn Khu ${selectedArea}.`, 'info');
+    }));
+  }
+
+  function renderChecklist() {
+    const content = $('#checklistContent'), placeholder = $('#joinPlaceholder');
+    if (!selectedArea || !session.name) {
+      content.classList.add('hidden');
+      placeholder.classList.remove('hidden');
+      return;
+    }
+    content.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+    
+    $('#printTitle').textContent = `BẢNG CHECKLIST CÔNG VIỆC | KHU ${selectedArea} | NGÀY ${formatDateVN(currentDate())}`;
+    renderTabs();
+    renderSummary();
+    renderTaskTable();
+    renderPendingBanner();
+  }
+
+  function renderTabs() {
+    const tabs = [
+      { key: 'ALL', label: 'Tất cả' },
+      { key: 'CHECKLIST ĐẦU CA', label: 'Đầu ca' },
+      { key: 'CHECKLIST CUỐI CA', label: 'Cuối ca' },
+      { key: 'CA 15H: SETUP BÀN', label: 'Ca 15h' },
+      { key: 'CA 17H: RÀ SOÁT & HOÀN THIỆN', label: 'Ca 17h' },
+      { key: 'XUỐNG CA LẦN 1', label: 'Xuống ca 1' },
+      { key: 'XUỐNG CA SAU CÙNG', label: 'Xuống ca cuối' }
+    ];
+    $('#phaseTabs').innerHTML = tabs.map(t => `<button class="tab ${activePhase === t.key ? 'active' : ''}" data-tab="${t.key}">${t.label}</button>`).join('');
+    $$('.tab').forEach(tab => tab.addEventListener('click', () => {
+      activePhase = tab.dataset.tab;
+      renderChecklist();
+    }));
+  }
+
+  function renderSummary() {
+    const states = flatItems.map(item => getMergedItemState(item));
+    const done = states.filter(s => s.checked).length;
+    const total = flatItems.length;
+    
+    const subTotal = flatItems.reduce((s, i) => s + (i.subitems?.length || 0), 0);
+    const subDone = flatItems.reduce((s, item, idx) => s + countSubDone(item, states[idx]), 0);
+    
+    const pct = total ? Math.round(done / total * 100) : 0;
+    
+    $('#summaryStrip').innerHTML = `
+      <div class="metric"><b>Khu ${selectedArea}</b><span>Khu đang trực</span></div>
+      <div class="metric"><b>${done}/${total}</b><span>Hạng mục tổng</span></div>
+      <div class="metric"><b>${subDone}/${subTotal}</b><span>Checklist con</span></div>
+      <div class="metric"><b>${pct}%</b><span>Hoàn thành</span></div>
+    `;
+  }
+
+  function groupVisible(group) {
+    return activePhase === 'ALL' || group.phase === activePhase || group.shift === activePhase;
+  }
+
+  function renderTaskTable() {
+    let html = '';
+    checklist.filter(groupVisible).forEach(group => {
+      html += `<tr class="group-row"><td colspan="4"><span class="phase-badge">${escapeHtml(group.phase)}</span><span class="phase-badge">${escapeHtml(group.shift)}</span>${escapeHtml(group.section)}</td></tr>`;
+      
+      group.items.forEach(item => {
+        const state = getMergedItemState(item);
+        const hasPending = Object.prototype.hasOwnProperty.call(pending, item.id);
+        const meta = state.checked 
+          ? `<span class="done-meta">✓ Xong ${state.by ? `bởi ${escapeHtml(state.by)}` : ''} ${state.at ? `lúc ${timeOnly(state.at)}` : ''}</span>`
+          : '<span>Chưa hoàn thành</span>';
+        
+        const note = getNoteValue(item.id) || state.note || '';
+        const subDone = countSubDone(item, state);
+        const subTotal = item.subitems?.length || 0;
+        
+        const subHtml = subTotal 
+          ? `<div class="subtask-panel">
+              <div class="subtask-head"><span>Checklist con của hạng mục</span><span class="subtask-count">${subDone}/${subTotal} đã tick</span></div>
+              <div class="subtask-grid">
+                ${item.subitems.map(sub => `<label class="subtask-item"><input class="subtask-checkbox" type="checkbox" data-parent-id="${item.id}" data-sub-id="${sub.id}" ${state.subchecks?.[sub.id] ? 'checked' : ''}> <span>${escapeHtml(sub.text)}</span></label>`).join('')}
+              </div>
+            </div>`
+          : '';
+        
+        const autoNote = subTotal && state.checked ? '<span class="auto-complete-note">✓ Tự động hoàn thành</span>' : '';
+        const pendingBadge = hasPending ? '<span style="color:var(--amber-text);font-weight:800;background:var(--amber-light);border:1px solid var(--amber-border);padding:2px 8px;border-radius:99px">Lưu tạm</span>' : '';
+        
+        html += `
+          <tr>
+            <td class="stt">${item.no}</td>
+            <td class="task-cell">
+              <div class="task-title">${escapeHtml(item.title)}</div>
+              <div class="task-text">${escapeHtml(item.text)}</div>
+              ${subHtml}
+              <div class="task-meta">${meta}${autoNote}${pendingBadge}</div>
+            </td>
+            <td class="check-cell">
+              <input class="checkbox" type="checkbox" data-item-id="${item.id}" ${state.checked ? 'checked' : ''}>
+            </td>
+            <td class="note-cell">
+              <textarea class="row-note" data-note-id="${item.id}" placeholder="Ghi chú nội bộ...">${escapeHtml(note)}</textarea>
+              <button class="tiny-btn" data-save-note="${item.id}">💾 Lưu ghi chú</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+
+    $('#taskTableBody').innerHTML = html;
+    
+    // Register actions
+    $$('input[data-item-id]').forEach(cb => cb.addEventListener('change', onItemToggle));
+    $$('input[data-sub-id]').forEach(cb => cb.addEventListener('change', onSubItemToggle));
+    $$('[data-save-note]').forEach(btn => btn.addEventListener('click', () => saveNote(btn.dataset.saveNote)));
+  }
+
+  function getNoteValue(id) {
+    const el = $$('[data-note-id]').find(n => n.dataset.noteId === id);
+    return el ? el.value.trim() : '';
+  }
+
+  // Toggling checklists
+  async function onItemToggle(e) {
+    const id = e.target.dataset.itemId;
+    const checked = e.target.checked;
+    const item = flatItems.find(x => x.id === id);
+    
+    const state = makeParentToggleState(item, checked, getNoteValue(id));
+
+    if (getSaveMode() === 'single') {
+      const detail = itemHasSubtasks(item) ? ' và các việc con?' : '?';
+      if (!confirm(`Xác nhận đánh dấu hoàn thành Hạng mục ${item.no}${detail}`)) {
+        e.target.checked = !checked;
+        return;
+      }
+      pending[id] = state;
+      await syncStateToServer(false);
+    } else {
+      pending[id] = state;
+      renderChecklist();
+      renderAreaBoard();
+    }
+  }
+
+  async function onSubItemToggle(e) {
+    const parentId = e.target.dataset.parentId;
+    const subId = e.target.dataset.subId;
+    const checked = e.target.checked;
+    const item = flatItems.find(x => x.id === parentId);
+    
+    const state = makeSubToggleState(item, subId, checked, getNoteValue(parentId));
+
+    if (getSaveMode() === 'single') {
+      pending[parentId] = state;
+      await syncStateToServer(false);
+    } else {
+      pending[parentId] = state;
+      renderChecklist();
+      renderAreaBoard();
+    }
+  }
+
+  async function saveNote(id) {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng tham gia checklist trước.', 'error');
+      return;
+    }
+    const item = flatItems.find(x => x.id === id);
+    const note = getNoteValue(id);
+    const cur = getMergedItemState(item);
+    
+    const next = {
+      ...cur,
+      note,
+      by: session.name,
+      at: new Date().toISOString()
+    };
+
+    pending[id] = next;
+    
+    if (getSaveMode() === 'single') {
+      await syncStateToServer(false);
+      toast('Ghi chú đã lưu trực tuyến!', 'success');
+    } else {
+      renderPendingBanner();
+      renderSummary();
+      toast('Ghi chú được lưu tạm. Hãy bấm nút đồng bộ.', 'info');
+    }
+  }
+
+  // Synchronize checklist changes to Google Sheets
+  async function syncStateToServer(interactive = true) {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng chọn khu & điền tên nhân viên trước!', 'error');
+      return;
+    }
+
+    const keys = Object.keys(pending);
+    if (!keys.length && interactive) {
+      toast('Không có thay đổi nào cần đồng bộ.', 'info');
+      return;
+    }
+
+    if (interactive && !confirm(`Đồng bộ các checklist Khu ${selectedArea} lên Google Sheets?`)) {
+      return;
+    }
+
+    const dateKey = currentDate();
+    const areaData = getAreaData();
+
+    // Apply pending local modifications to DB
+    keys.forEach(id => {
+      if (id === 'supply' || id === 'signatures') return;
+      const item = flatItems.find(x => x.id === id);
+      const state = pending[id];
+      const norm = normalizeItemState(item, state);
+      areaData.items[id] = {
+        checked: norm.checked,
+        note: norm.note,
+        subchecks: norm.subchecks,
+        by: session.name,
+        at: norm.at || new Date().toISOString()
+      };
+    });
+
+    const backupPending = { ...pending };
+    pending = {}; // Clear pending immediately to avoid repeat sync triggers
+    
+    toast('Đang đồng bộ dữ liệu lên Google Sheets...', 'info');
+    
+    try {
+      const result = await callAPI('saveChecklistState', [
+        dateKey,
+        selectedArea,
+        areaData.participants,
+        areaData.items,
+        areaData.supply,
+        areaData.signatures
+      ]);
+
+      saveDB();
+      renderAll();
+      toast('Đồng bộ dữ liệu lên Google Sheets thành công!', 'success');
+    } catch(err) {
+      console.error("Sync Failed:", err);
+      // Restore pending cache if server sync fails
+      pending = { ...backupPending, ...pending };
+      
+      if (err.message === 'API_NOT_CONFIGURED') {
+        saveDB();
+        renderAll();
+        toast('Dữ liệu đã được lưu ngoại tuyến trên trình duyệt (Thiếu API URL).', 'success');
+      } else {
+        toast('Lỗi đồng bộ. Dữ liệu đã lưu tạm trên thiết bị, sẽ thử lại sau.', 'error');
+      }
+    }
+  }
+
+  function renderPendingBanner() {
+    const count = Object.keys(pending).length;
+    $('#pendingText').textContent = count ? `Có ${count} hạng mục checklist thay đổi chưa đồng bộ lên Google Sheets.` : '';
+    $('#pendingBanner').classList.toggle('show', !!count);
+  }
+
+  // Supply Management
+  function renderSupply() {
+    $('#supplyArea').textContent = selectedArea || '____';
+    $('#supplyDate').textContent = formatDateVN(currentDate());
+    const supply = selectedArea ? (getAreaData(selectedArea).supply || {}) : {};
+    $$('[data-supply]').forEach(cb => cb.checked = !!supply[cb.dataset.supply]);
+    $('#supplyNote').value = supply.note || '';
+    
+    $('#supplyMeta').textContent = supply.savedAt 
+      ? `Đã lưu: ${supply.by || ''} lúc ${timeOnly(supply.savedAt)} ${dateOnly(supply.savedAt)}.`
+      : 'Đủ dùng trong ca trực. Nếu vẫn đủ dùng, chọn "Đủ dùng".';
+  }
+
+  async function saveSupply() {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng tham gia checklist trước.', 'error');
+      return;
+    }
+    
+    if (!confirm('Lưu đề xuất vật tư này?')) return;
+    
+    const supply = {
+      note: $('#supplyNote').value.trim(),
+      by: session.name,
+      savedAt: new Date().toISOString()
+    };
+    $$('[data-supply]').forEach(cb => supply[cb.dataset.supply] = cb.checked);
+    
+    getAreaData().supply = supply;
+    saveDB();
+    renderSupply();
+    pending['supply'] = true;
+
+    if (getSaveMode() === 'single') {
+      await syncStateToServer(false);
+    } else {
+      renderPendingBanner();
+      toast('Đã lưu tạm đề xuất vật tư. Hãy bấm nút đồng bộ.', 'info');
+    }
+  }
+
+  // Signature Management
+  function renderSignatures() {
+    if (!selectedArea) {
+      $('#sigReceive').value = '';
+      $('#sigHandover').value = '';
+      $('#sigManager').value = '';
+      return;
+    }
+    const sig = getAreaData().signatures || {};
+    $('#sigReceive').value = sig.receive || '';
+    $('#sigHandover').value = sig.handover || '';
+    $('#sigManager').value = sig.manager || '';
+  }
+
+  async function saveSignatures() {
+    if (!session.name || !selectedArea) {
+      toast('Vui lòng tham gia checklist trước.', 'error');
+      return;
+    }
+    
+    if (!confirm('Lưu chữ ký xác nhận bàn giao ca?')) return;
+    
+    const sig = {
+      receive: $('#sigReceive').value.trim(),
+      handover: $('#sigHandover').value.trim(),
+      manager: $('#sigManager').value.trim(),
+      by: session.name,
+      savedAt: new Date().toISOString()
+    };
+    
+    getAreaData().signatures = sig;
+    saveDB();
+    renderSignatures();
+    pending['signatures'] = true;
+
+    if (getSaveMode() === 'single') {
+      await syncStateToServer(false);
+    } else {
+      renderPendingBanner();
+      toast('Đã lưu chữ ký bàn giao ca tạm thời. Hãy bấm nút đồng bộ.', 'info');
+    }
+  }
+
+  // Report PNG Modal Handlers
+  function getReportOptions() {
+    return {
+      scope: ($('input[name="reportScope"]:checked') || {}).value || 'current',
+      mode: ($('input[name="reportMode"]:checked') || {}).value || 'completed',
+      showSubtasks: !!$('#reportShowSubtasks').checked,
+      includeSupply: !!$('#reportIncludeSupply').checked,
+      includeSignatures: !!$('#reportIncludeSignatures').checked,
+      includeEmptyGroups: !!$('#reportIncludeEmptyGroups').checked
+    };
+  }
+
+  function openReportModal() {
+    if (!selectedArea) {
+      toast('Hãy chọn khu và tham gia trước khi tạo báo cáo.', 'error');
+      return;
+    }
+    if (Object.keys(pending).length) {
+      toast('Hãy lưu/đồng bộ các checklist trước khi tạo báo cáo.', 'error');
+      return;
+    }
+    $('#reportModal').classList.add('show');
+    renderReportPreview();
+  }
+
+  function closeReportModal() { $('#reportModal').classList.remove('show'); }
+
+  function getAreaStats(areaData) {
+    const totalItems = flatItems.length;
+    const doneItems = flatItems.filter(item => normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked).length;
+    
+    const totalSub = flatItems.reduce((s, i) => s + (i.subitems?.length || 0), 0);
+    const doneSub = flatItems.reduce((s, item) => s + countSubDone(item, normalizeItemState(item, (areaData.items || {})[item.id] || {})), 0);
+    
+    return {
+      totalItems,
+      doneItems,
+      pendingItems: totalItems - doneItems,
+      progress: totalItems ? Math.round((doneItems / totalItems) * 100) : 0,
+      totalSubtasks: totalSub,
+      doneSubtasks: doneSub,
+      pendingSubtasks: totalSub - doneSub
+    };
+  }
+
+  function renderReportPreview() {
+    const opts = getReportOptions();
+    if (opts.scope === 'all') {
+      const day = ensureDay(currentDate());
+      $('#reportMetaPill').textContent = `Tổng hợp 4 khu · ${formatDateVN(currentDate())}`;
+      $('#reportPreview').innerHTML = buildAllAreasReportHTML(day, opts);
+      return;
+    }
+    const areaData = getAreaData(selectedArea);
+    $('#reportMetaPill').textContent = `Khu ${selectedArea} · ${formatDateVN(currentDate())}`;
+    $('#reportPreview').innerHTML = buildReportHTML(areaData, opts);
+  }
+
+  function buildReportHTML(areaData, opts) {
+    const stats = getAreaStats(areaData);
+    const participants = (areaData.participants || []).map(p => `<span class="report-staff-chip">👤 ${escapeHtml(p.name)} · ${timeOnly(p.joinedAt)}</span>`).join('') 
+      || '<div class="report-empty">Chưa có nhân viên tham gia khu trực này.</div>';
+    
+    const groupsHtml = checklist.map(group => {
+      const rows = group.items.map(item => renderReportItem(item, normalizeItemState(item, (areaData.items || {})[item.id] || {}), opts)).filter(Boolean).join('');
+      const visibleCount = group.items.filter(item => opts.mode === 'all' || normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked).length;
+      if (!rows.trim() && !opts.includeEmptyGroups) return '';
+      const doneCount = group.items.filter(item => normalizeItemState(item, (areaData.items || {})[item.id] || {}).checked).length;
+      return `<section class="report-group">
+        <div class="report-group-head">
+          <div>
+            <div class="report-group-title">${escapeHtml(group.section)}</div>
+            <div class="report-group-sub">
+              <span class="report-phase-pill">${escapeHtml(group.phase)}</span>
+              <span class="report-phase-pill">${escapeHtml(group.shift)}</span>
+              <span class="report-count-pill">${doneCount}/${group.items.length} hạng mục xong</span>
+            </div>
+          </div>
+          <div class="report-status ${doneCount === group.items.length ? 'done' : 'pending'}">${opts.mode === 'completed' ? visibleCount + ' mục hiển thị' : 'Đầy đủ'}</div>
+        </div>
+        ${rows || '<div class="report-empty">Không có hạng mục công việc.</div>'}
+      </section>`;
+    }).join('') || '<div class="report-section"><div class="report-empty">Chưa có dữ liệu.</div></div>';
+
+    const supplyHtml = opts.includeSupply ? buildSupplyReport(areaData) : '';
+    const sigHtml = opts.includeSignatures ? buildSignatureReport(areaData) : '';
+
+    return `
+      <div class="report-sheet" id="reportSheet">
+        <header class="report-header">
+          <div>
+            <div class="report-kicker">KING'S GRILL · CHECKLIST BÁO CÁO</div>
+            <div class="report-title">Báo cáo checklist công việc hàng ngày</div>
+            <p class="report-subtitle">Tình trạng hoàn thành công việc đầu ca - cuối ca, ghi chú vận hành và chữ ký xác nhận.</p>
+          </div>
+          <div class="report-badge-area"><b>Khu trực</b><span>${escapeHtml(selectedArea)}</span></div>
+        </header>
+        <div class="report-meta-bar">
+          <section class="report-staff">
+            <div class="report-section-title">👥 Nhân viên khu trực</div>
+            <div class="report-staff-chips">${participants}</div>
+          </section>
+          <section class="report-meta-card">
+            <div class="report-section-title">🗓️ Thông tin vận hành</div>
+            <div class="report-item-meta">
+              <span>Ngày: <b>${formatDateVN(currentDate())}</b></span>
+              <span>Chế độ: <b>${opts.mode === 'completed' ? 'Việc đã làm' : 'Toàn bộ'}</b></span>
+              <span>Tạo lúc: <b>${timeOnly(new Date().toISOString())}</b></span>
+            </div>
+          </section>
+        </div>
+        <div class="report-meta-list">
+          <div class="report-metric"><b>${stats.doneItems}/${stats.totalItems}</b><span>Hạng mục xong</span></div>
+          <div class="report-metric"><b>${stats.progress}%</b><span>Tỷ lệ xong</span></div>
+          <div class="report-metric"><b>${stats.doneSubtasks}/${stats.totalSubtasks}</b><span>Việc con xong</span></div>
+          <div class="report-metric"><b>${stats.pendingItems}</b><span>Mục chưa làm</span></div>
+        </div>
+        ${groupsHtml}
+        ${supplyHtml}
+        ${sigHtml}
+        <footer class="report-footer">
+          <div>Hệ thống đồng bộ Google Sheets · Báo cáo ảnh PNG</div>
+          <div>Bảng checklist công việc nhà hàng King's Grill</div>
+        </footer>
+      </div>
+    `;
+  }
+
+  function renderReportItem(item, state, opts) {
+    if (opts.mode === 'completed' && !state.checked) return '';
+    const isDone = state.checked;
+    let subtasks = '';
+    
+    if (opts.showSubtasks && itemHasSubtasks(item)) {
+      const rows = (item.subitems || [])
+        .filter(sub => opts.mode === 'all' || !!state.subchecks?.[sub.id])
+        .map(sub => {
+          const subDone = !!state.subchecks?.[sub.id];
+          return `<div class="report-subtask ${subDone ? 'done' : 'pending'}"><span class="dot">${subDone ? '✓' : '•'}</span><span>${escapeHtml(sub.text)}</span></div>`;
+        }).join('');
+      if (rows) subtasks = `<div class="report-subtasks">${rows}</div>`;
+    }
+
+    const note = state.note ? `<div class="report-note"><b>Ghi chú:</b> ${escapeHtml(state.note)}</div>` : '';
+    
+    return `
+      <div class="report-item ${isDone ? 'done' : 'pending'}">
+        <div class="report-item-head">
+          <div class="report-item-main">
+            <div class="report-item-no">${escapeHtml(item.no)}</div>
+            <div>
+              <div class="report-item-title">${escapeHtml(item.title)}</div>
+              <div class="report-item-text">${escapeHtml(item.text)}</div>
+            </div>
+          </div>
+          <div class="report-status ${isDone ? 'done' : 'pending'}">${isDone ? '✓ Đã xong' : '• Chưa xong'}</div>
+        </div>
+        <div class="report-item-meta">
+          <span>${state.by ? 'Xác nhận: ' + escapeHtml(state.by) : 'Chưa xác nhận'}</span>
+          <span>${state.at ? timeOnly(state.at) + ' ' + dateOnly(state.at) : ''}</span>
+        </div>
+        ${subtasks}
+        ${note}
+      </div>
+    `;
+  }
+
+  function buildSupplyReport(areaData) {
+    const map = {
+      du_dung: 'Đủ dùng',
+      khan_giay: 'Khăn giấy',
+      ong_hut: 'Ống hút',
+      diem: 'Diêm',
+      tam: 'Tăm',
+      xien_tre: 'Xiên tre',
+      bao_tay: 'Bao tay',
+      bao_rac: 'Bao rác',
+      bao_rac_den: 'Bao rác đen kín',
+      bao_rac_dai: 'Bao rác đại',
+      bao_rac_trung: 'Bao rác trung',
+      bao_rac_tieu: 'Bao rác tiểu',
+      bich_mang_ve: 'Bọc mang về',
+      bich_lau: 'Bịch lẩu',
+      bich_3kg: 'Bịch 3kg',
+      bich_5kg: 'Bịch 5kg',
+      hop_mang_ve: 'Hộp mang về',
+      hop_xop: 'Hộp xốp',
+      hop_nhua: 'Nhựa nắp rời'
+    };
+    
+    const s = areaData.supply || {};
+    const selected = Object.entries(s)
+      .filter(([k, v]) => !['note', 'by', 'savedAt'].includes(k) && v)
+      .map(([k]) => `<span class="report-staff-chip">${escapeHtml(map[k] || k)}</span>`)
+      .join('');
+      
+    return `
+      <section class="report-section">
+        <div class="report-section-title">📦 Đề xuất cấp vật tư</div>
+        ${selected ? `<div class="report-staff-chips">${selected}</div>` : '<div class="report-empty">Không có vật tư đề xuất.</div>'}
+        ${s.note ? `<div class="report-note"><b>Ghi chú vật tư:</b> ${escapeHtml(s.note)}</div>` : ''}
+        <div class="report-item-meta">
+          ${s.savedAt ? `<span>Đề xuất: ${escapeHtml(s.by || '')} lúc ${timeOnly(s.savedAt)}</span>` : ''}
+        </div>
+      </section>
+    `;
+  }
+
+  function buildSignatureReport(areaData) {
+    const sig = areaData.signatures || {};
+    return `
+      <section class="report-section">
+        <div class="report-section-title">✍️ Xác nhận bàn giao ca</div>
+        <div class="report-staff-chips">
+          <span class="report-staff-chip">Nhận ca: ${escapeHtml(sig.receive || 'Chưa ký')}</span>
+          <span class="report-staff-chip">Giao ca: ${escapeHtml(sig.handover || 'Chưa ký')}</span>
+          <span class="report-staff-chip">Quản lý: ${escapeHtml(sig.manager || 'Chưa xác nhận')}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  function buildAllAreasReportHTML(day, opts) {
+    const totals = AREA_CODES.reduce((a, area) => {
+      const s = getAreaStats(day.areas[area]);
+      a.doneItems += s.doneItems;
+      a.totalItems += s.totalItems;
+      a.doneSubtasks += s.doneSubtasks;
+      a.totalSubtasks += s.totalSubtasks;
+      a.staff += (day.areas[area].participants || []).length;
+      return a;
+    }, { doneItems: 0, totalItems: 0, doneSubtasks: 0, totalSubtasks: 0, staff: 0 });
+
+    const pct = totals.totalItems ? Math.round((totals.doneItems / totals.totalItems) * 100) : 0;
+    
+    const blocks = AREA_CODES.map(area => {
+      const data = day.areas[area];
+      const stats = getAreaStats(data);
+      const staff = (data.participants || []).map(p => `<span class="report-staff-chip">👤 ${escapeHtml(p.name)}</span>`).join('') 
+        || '<div class="report-empty">Không có nhân viên.</div>';
+        
+      const source = opts.mode === 'completed' 
+        ? flatItems.filter(item => normalizeItemState(item, (data.items || {})[item.id] || {}).checked)
+        : flatItems;
+        
+      const limit = opts.mode === 'completed' ? 18 : 24;
+      const items = source.slice(0, limit)
+        .map(item => renderReportItem(item, normalizeItemState(item, (data.items || {})[item.id] || {}), opts))
+        .join('') || '<div class="report-empty">Không có hạng mục.</div>';
+
+      return `
+        <section class="report-area-block">
+          <div class="report-area-block-head">
+            <div>
+              <div class="report-area-block-title">Khu ${escapeHtml(area)}</div>
+              <div class="report-group-sub">
+                <span class="report-count-pill">${stats.doneItems}/${stats.totalItems} hạng mục</span>
+                <span class="report-phase-pill">${stats.doneSubtasks}/${stats.totalSubtasks} việc con</span>
+              </div>
+            </div>
+            <div class="report-status ${stats.progress === 100 ? 'done' : 'pending'}">${stats.progress}% hoàn thành</div>
+          </div>
+          <div class="report-area-grid">
+            <div class="report-mini-metric"><b>${stats.doneItems}</b><span>Hạng mục xong</span></div>
+            <div class="report-mini-metric"><b>${stats.pendingItems}</b><span>Chưa hoàn thành</span></div>
+            <div class="report-mini-metric"><b>${stats.doneSubtasks}</b><span>Việc con xong</span></div>
+            <div class="report-mini-metric"><b>${(data.participants || []).length}</b><span>Nhân viên trực</span></div>
+          </div>
+          <section class="report-section" style="margin:0 20px 14px">
+            <div class="report-section-title">👥 Phụ trách</div>
+            <div class="report-staff-chips">${staff}</div>
+          </section>
+          <section class="report-section" style="margin:0 20px 20px">
+            <div class="report-section-title">${opts.mode === 'completed' ? '✅ Việc đã làm' : '📋 Trạng thái checklist'}</div>
+            ${items}
+            ${source.length > limit ? `<div class="report-note">Còn ${source.length - limit} việc khác được thu gọn.</div>` : ''}
+          </section>
+        </section>
+      `;
+    }).join('');
+
+    return `
+      <div class="report-sheet" id="reportSheet">
+        <header class="report-header">
+          <div>
+            <div class="report-kicker">KING'S GRILL · CHECKLIST BÁO CÁO TỔNG HỢP</div>
+            <div class="report-title">Báo cáo tổng hợp tiến độ checklist 4 khu</div>
+            <p class="report-subtitle">Tổng hợp trạng thái checklist vận hành ngày hôm nay.</p>
+          </div>
+          <div class="report-badge-area"><b>Tổng tiến độ</b><span>${pct}%</span></div>
+        </header>
+        <div class="report-meta-list">
+          <div class="report-metric"><b>${totals.doneItems}/${totals.totalItems}</b><span>Hạng mục tổng xong</span></div>
+          <div class="report-metric"><b>${totals.doneSubtasks}/${totals.totalSubtasks}</b><span>Việc con xong</span></div>
+          <div class="report-metric"><b>${totals.staff}</b><span>Nhân viên tham gia</span></div>
+          <div class="report-metric"><b>${formatDateVN(currentDate())}</b><span>Ngày báo cáo</span></div>
+        </div>
+        ${blocks}
+        <footer class="report-footer">
+          <div>Hệ thống đồng bộ Google Sheets · Báo cáo ảnh tổng hợp</div>
+          <div>Bảng tổng hợp checklist King's Grill</div>
+        </footer>
+      </div>
+    `;
+  }
+
+  // Export report preview layout to PNG image file
+  async function downloadReportImage() {
+    const target = $('#reportSheet');
+    if (!target) {
+      toast('Không tìm thấy nội dung báo cáo để xuất ảnh.', 'error');
+      return;
+    }
+    const btn = $('#downloadReportBtn');
+    const old = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Đang xuất ảnh...';
+
+    try {
+      let canvas;
+      if (window.html2canvas) {
+        canvas = await window.html2canvas(target, {
+          scale: 2,
+          backgroundColor: '#f5f8fc',
+          useCORS: true,
+          logging: false
+        });
+      } else {
+        throw new Error('Thư viện html2canvas chưa được nạp.');
+      }
+      
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      const scopeName = getReportOptions().scope === 'all' ? 'TONG_HOP_4_KHU' : String(selectedArea || '').replace('&', 'E');
+      a.download = `KG_CHECKLIST_BAOCAO_${currentDate()}_${scopeName}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      toast('Đã tải ảnh báo cáo PNG thành công!', 'success');
+    } catch (err) {
+      console.error(err);
+      toast('Không thể tải ảnh. Hãy thử lại hoặc in file ra PDF.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = old;
+    }
+  }
+
+  // Data Import/Export (JSON Local Backup)
+  function exportData() {
+    const payload = {
+      schema: 'KG_CHECKLIST_WEBAPP_V7',
+      exportedAt: new Date().toISOString(),
+      selectedDate: currentDate(),
+      selectedArea,
+      data: ensureDay(currentDate()),
+      fullDB: db
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `KG_CHECKLIST_${currentDate()}${selectedArea ? '_' + selectedArea.replace('&', 'E') : ''}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast('Đã xuất dữ liệu lưu trữ JSON!', 'success');
+  }
+
+  function importData(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const payload = JSON.parse(reader.result);
+        const incoming = payload.fullDB || payload;
+        
+        if (!incoming.days && payload.data?.areas) {
+          incoming.days = { [payload.selectedDate || currentDate()]: payload.data };
+        }
+        
+        if (!incoming.days) throw new Error('Cấu trúc file JSON không chính xác.');
+        
+        if (!confirm('Nhập đè dữ liệu checklist đã chọn? Tiến độ hiện tại trên máy này sẽ bị gộp.')) return;
+        
+        db.days = { ...(db.days || {}), ...(incoming.days || {}) };
+        saveDB();
+        ensureDay(currentDate());
+        renderAll();
+        toast('Gộp dữ liệu thành công!', 'success');
+      } catch (err) {
+        console.error(err);
+        toast('File dữ liệu JSON không hợp lệ!', 'error');
+      } finally {
+        event.target.value = '';
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  // Helper date/time formatters
+  function timeOnly(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function dateOnly(iso) {
+    if (!iso) return '';
+    return new Date(iso).toLocaleDateString('vi-VN');
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>'"]/g, s => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[s]));
+  }
+
+  // Execute initialization on page load
+  window.addEventListener('DOMContentLoaded', init);
+</script>
