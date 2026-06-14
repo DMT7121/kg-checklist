@@ -1994,14 +1994,21 @@
       throw new Error("API_NOT_CONFIGURED");
     }
 
+    // Determine whether to use proxy or direct fetch
+    const isHosted = window.location.protocol.startsWith('http');
+    const fetchUrl = isHosted ? '/api' : gasApiUrl;
+    
+    const headers = {
+      'Content-Type': 'text/plain;charset=utf-8'
+    };
+    if (isHosted) {
+      headers['X-GAS-API-URL'] = gasApiUrl;
+    }
+
     try {
-      // Use text/plain to avoid preflight OPTIONS request on Apps Script
-      const response = await fetch(gasApiUrl, {
+      const response = await fetch(fetchUrl, {
         method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
+        headers: headers,
         body: JSON.stringify({ method: methodName, args: args })
       });
       const result = await response.json();
@@ -2011,6 +2018,28 @@
       throw new Error(result.error || "Server responded with error status");
     } catch(err) {
       console.error("API Fetch Error:", err);
+      // Fallback to direct fetch if proxy fails or is not found
+      if (isHosted && fetchUrl === '/api') {
+        console.warn("Proxy call failed, attempting direct fallback...");
+        try {
+          const fallbackResponse = await fetch(gasApiUrl, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify({ method: methodName, args: args })
+          });
+          const fallbackResult = await fallbackResponse.json();
+          if (fallbackResult.success) {
+            return fallbackResult.data;
+          }
+          throw new Error(fallbackResult.error || "Server responded with error status");
+        } catch(fallbackErr) {
+          console.error("Fallback Direct Fetch also failed:", fallbackErr);
+          throw fallbackErr;
+        }
+      }
       throw err;
     }
   }
