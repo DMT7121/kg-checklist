@@ -2108,6 +2108,17 @@
 
   // Initialize
   async function init() {
+    // Normalize fallback checklist IDs to match backend dynamic safeId mapping
+    DEFAULT_CHECKLIST.forEach(group => {
+      group.items.forEach(item => {
+        if (Array.isArray(item.subitems)) {
+          item.subitems.forEach(sub => {
+            sub.id = safeId(sub.text);
+          });
+        }
+      });
+    });
+
     initApiUrl();
     $('#workDate').value = todayISO();
     $('#employeeName').value = session.name || '';

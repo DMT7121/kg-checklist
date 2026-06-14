@@ -10,12 +10,26 @@ var ChecklistService = (function() {
   
   var CONFIG_HEADERS = [
     "Mã Hạng Mục", "STT", "Phân Loại", "Ca Làm Việc", "Phần", 
-    "Tiêu Đề", "Mô Tả", "Mã Việc Con", "Nội Dung Việc Con"
+    "Tiêu Đề", "Mô Tả", "Công Việc Con"
   ];
   
   var STATE_HEADERS = [
     "Ngày", "Khu vực", "Nhân viên", "Dữ liệu JSON", "Thời gian cập nhật"
   ];
+
+  /**
+   * Helper to normalize text to safe English IDs (matching frontend safeId).
+   */
+  function safeId(text) {
+    if (!text) return "";
+    var str = text.toString().trim().toLowerCase();
+    var from = "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ";
+    var to   = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd";
+    for (var i = 0; i < from.length; i++) {
+      str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+    }
+    return str.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  }
 
   /**
    * Initializes the default checklist definitions in the spreadsheet.
@@ -27,122 +41,51 @@ var ChecklistService = (function() {
 
     var defaults = [
       // PHASE 1: SETUP BÀN (CA 15H)
-      { id: "start_clean_floor", no: 1, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Vệ sinh sàn & Khu vực chung", desc: "Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.", subId: "floor_sweep", subText: "Quét sạch tổng thể sàn khu trực" },
-      { id: "start_clean_floor", no: 1, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Vệ sinh sàn & Khu vực chung", desc: "Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.", subId: "floor_mop", subText: "Lau sàn, xử lý vết bẩn dễ thấy" },
-      { id: "start_clean_floor", no: 1, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Vệ sinh sàn & Khu vực chung", desc: "Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.", subId: "gate_clean", subText: "Quét dọn sạch khu vực cổng ra vào" },
-      { id: "start_clean_floor", no: 1, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Vệ sinh sàn & Khu vực chung", desc: "Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.", subId: "corner_check", subText: "Kiểm tra góc khuất, gầm/tủ gần khu trực" },
-
-      { id: "start_table_setup", no: 2, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Bàn ghế", desc: "Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.", subId: "table_wipe", subText: "Lau sạch mặt bàn" },
-      { id: "start_table_setup", no: 2, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Bàn ghế", desc: "Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.", subId: "chair_wipe", subText: "Lau sạch ghế và sắp xếp ngay ngắn" },
-      { id: "start_table_setup", no: 2, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Bàn ghế", desc: "Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.", subId: "tableware_ready", subText: "Setup đủ chén, đũa, muỗng, ly" },
-      { id: "start_table_setup", no: 2, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Bàn ghế", desc: "Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.", subId: "reservation_layout", subText: "Bố trí bàn ghế đúng lịch đặt bàn" },
-
-      { id: "start_background", no: 3, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Background tiệc", desc: "Lau bụi background/vật dụng trang trí.", subId: "bg_dust", subText: "Lau bụi background và vật dụng trang trí" },
-      { id: "start_background", no: 3, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Background tiệc", desc: "Lau bụi background/vật dụng trang trí.", subId: "decor_check", subText: "Kiểm tra hoa/nến/decor nếu có" },
-      { id: "start_background", no: 3, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Background tiệc", desc: "Lau bụi background/vật dụng trang trí.", subId: "decor_report", subText: "Báo quản lý nếu decor hỏng, thiếu hoặc lệch tông" },
-
-      { id: "start_tools_check", no: 4, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Diêm/bật lửa, khăn giấy, hộp/bịch mang về", desc: "Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.", subId: "match_lighter", subText: "Kiểm tra diêm/bật lửa" },
-      { id: "start_tools_check", no: 4, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Diêm/bật lửa, khăn giấy, hộp/bịch mang về", desc: "Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.", subId: "tissue_ready", subText: "Kiểm tra khăn giấy" },
-      { id: "start_tools_check", no: 4, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Diêm/bật lửa, khăn giấy, hộp/bịch mang về", desc: "Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.", subId: "takeaway_ready", subText: "Kiểm tra hộp/bịch mang về" },
-      { id: "start_tools_check", no: 4, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Diêm/bật lửa, khăn giấy, hộp/bịch mang về", desc: "Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.", subId: "supply_shortage", subText: "Ghi nhận vật tư thiếu để đề xuất cấp thêm" },
-
-      { id: "start_station_arrange", no: 5, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Sắp xếp", desc: "Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.", subId: "cabinet_tidy", subText: "Sắp xếp gọn tủ đồ khu trực" },
-      { id: "start_station_arrange", no: 5, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Sắp xếp", desc: "Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.", subId: "station_ready", subText: "Bố trí trạm đồ dùng dự phòng" },
-      { id: "start_station_arrange", no: 5, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Sắp xếp", desc: "Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.", subId: "tool_easy_access", subText: "Đặt dụng cụ ở vị trí dễ lấy khi đông khách" },
-      { id: "start_station_arrange", no: 5, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Sắp xếp", desc: "Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.", subId: "station_clean", subText: "Kiểm tra trạm không bừa bộn, không lẫn đồ hư" },
-
-      { id: "start_reserved_setup", no: 6, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Setup bàn đặt", desc: "Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.", subId: "reserved_count", subText: "Kiểm tra đủ số lượng bàn/ghế" },
-      { id: "start_reserved_setup", no: 6, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Setup bàn đặt", desc: "Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.", subId: "reserved_theme", subText: "Đúng tông màu/trang trí theo yêu cầu" },
-      { id: "start_reserved_setup", no: 6, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Setup bàn đặt", desc: "Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.", subId: "reserved_need", subText: "Đúng nhu cầu tiệc: sinh nhật, liên hoan, gia đình..." },
-      { id: "start_reserved_setup", no: 6, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Setup bàn đặt", desc: "Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.", subId: "reserved_food_drink", subText: "Nắm món/đồ uống đặt trước nếu có" },
-
-      { id: "start_reserved_mark", no: 7, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Đánh dấu", desc: "Cắm khăn giấy nhận diện hoặc đặt bảng “Bàn đặt trước”.", subId: "reserved_tissue", subText: "Cắm khăn giấy nhận diện bàn đặt trước" },
-      { id: "start_reserved_mark", no: 7, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Đánh dấu", desc: "Cắm khăn giấy nhận diện hoặc đặt bảng “Bàn đặt trước”.", subId: "reserved_sign", subText: "Đặt bảng “Bàn đặt trước” nếu cần" },
-      { id: "start_reserved_mark", no: 7, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Đánh dấu", desc: "Cắm khăn giấy nhận diện hoặc đặt bảng “Bàn đặt trước”.", subId: "reserved_position", subText: "Kiểm tra đúng vị trí, tránh nhầm bàn" },
-
-      { id: "start_handover_receive", no: 8, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "IV. Bàn giao đầu ca", title: "Nhận bàn giao", desc: "Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.", subId: "handover_assets", subText: "Kiểm tra tài sản/dụng cụ được bàn giao" },
-      { id: "start_handover_receive", no: 8, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "IV. Bàn giao đầu ca", title: "Nhận bàn giao", desc: "Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.", subId: "handover_info", subText: "Nắm thông tin tồn đọng từ ca trước" },
-      { id: "start_handover_receive", no: 8, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "IV. Bàn giao đầu ca", title: "Nhận bàn giao", desc: "Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.", subId: "handover_issue", subText: "Phản hồi sai sót nếu có" },
-      { id: "start_handover_receive", no: 8, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "IV. Bàn giao đầu ca", title: "Nhận bàn giao", desc: "Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.", subId: "handover_report", subText: "Báo cáo lại cho tổ trưởng/quản lý" },
-
+      { id: "start_clean_floor", no: 1, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Vệ sinh sàn & Khu vực chung", desc: "Quét và lau sạch tổng thể khu trực. Quét dọn sạch sẽ khu vực cổng ra vào.", subtasks: ["Quét sạch tổng thể sàn khu trực", "Lau sàn, xử lý vết bẩn dễ thấy", "Quét dọn sạch khu vực cổng ra vào", "Kiểm tra góc khuất, gầm/tủ gần khu trực"] },
+      { id: "start_table_setup", no: 2, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Bàn ghế", desc: "Lau sạch bàn ghế, setup tiêu chuẩn/đủ dụng cụ: Chén, Đũa, Muỗng, Ly. Bố trí đầy đủ theo lịch đặt bàn.", subtasks: ["Lau sạch mặt bàn", "Lau sạch ghế và sắp xếp ngay ngắn", "Setup đủ chén, đũa, muỗng, ly", "Bố trí bàn ghế đúng lịch đặt bàn"] },
+      { id: "start_background", no: 3, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "I. Vệ sinh & setup khu trực", title: "Background tiệc", desc: "Lau bụi background/vật dụng trang trí.", subtasks: ["Lau bụi background và vật dụng trang trí", "Kiểm tra hoa/nến/decor nếu có", "Báo quản lý nếu decor hỏng, thiếu hoặc lệch tông"] },
+      { id: "start_tools_check", no: 4, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Diêm/bật lửa, khăn giấy, hộp/bịch mang về", desc: "Kiểm tra đủ diêm/bật lửa, khăn giấy, hộp/bịch mang về và các vật tư thường dùng.", subtasks: ["Kiểm tra diêm/bật lửa", "Kiểm tra khăn giấy", "Kiểm tra hộp/bịch mang về", "Ghi nhận vật tư thiếu để đề xuất cấp thêm"] },
+      { id: "start_station_arrange", no: 5, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "II. Công cụ & Vật tư", title: "Sắp xếp", desc: "Gọn gàng tủ đồ, bố trí các trạm đồ dùng dự phòng để giảm tải khi đông khách.", subtasks: ["Sắp xếp gọn tủ đồ khu trực", "Bố trí trạm đồ dùng dự phòng", "Đặt dụng cụ ở vị trí dễ lấy khi đông khách", "Kiểm tra trạm không bừa bộn, không lẫn đồ hư"] },
+      { id: "start_reserved_setup", no: 6, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Setup bàn đặt", desc: "Đủ số lượng, đúng tông màu, đúng nhu cầu tiệc, đã chuẩn bị đầy đủ theo thông tin đặt trước.", subtasks: ["Kiểm tra đủ số lượng bàn/ghế", "Đúng tông màu/trang trí theo yêu cầu", "Đúng nhu cầu tiệc: sinh nhật, liên hoan, gia đình...", "Nắm món/đồ uống đặt trước nếu có"] },
+      { id: "start_reserved_mark", no: 7, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "III. Bàn đặt trước", title: "Đánh dấu", desc: "Cắm khăn giấy nhận diện hoặc đặt bảng “Bàn đặt trước”.", subtasks: ["Cắm khăn giấy nhận diện bàn đặt trước", "Đặt bảng “Bàn đặt trước” nếu cần", "Kiểm tra đúng vị trí, tránh nhầm bàn"] },
+      { id: "start_handover_receive", no: 8, phase: "CHECKLIST ĐẦU CA", shift: "CA 15H: SETUP BÀN", section: "IV. Bàn giao đầu ca", title: "Nhận bàn giao", desc: "Kiểm tra tài sản/thông tin từ ca trước. Báo cáo bàn giao đầu ca, phản hồi sai sót nếu có.", subtasks: ["Kiểm tra tài sản/dụng cụ được bàn giao", "Nắm thông tin tồn đọng từ ca trước", "Phản hồi sai sót nếu có", "Báo cáo lại cho tổ trưởng/quản lý"] },
+      
       // PHASE 2: RÀ SOÁT & HOÀN THIỆN (CA 17H)
-      { id: "mid_double_check", no: 9, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Double-check ca 15h", desc: "Hoàn thành các việc tồn đọng của đầu ca.", subId: "double_clean", subText: "Rà soát vệ sinh khu vực" },
-      { id: "mid_double_check", no: 9, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Double-check ca 15h", desc: "Hoàn thành các việc tồn đọng của đầu ca.", subId: "double_setup", subText: "Rà soát setup bàn ghế/dụng cụ" },
-      { id: "mid_double_check", no: 9, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Double-check ca 15h", desc: "Hoàn thành các việc tồn đọng của đầu ca.", subId: "double_reserved", subText: "Rà soát bàn đặt trước" },
-      { id: "mid_double_check", no: 9, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Double-check ca 15h", desc: "Hoàn thành các việc tồn đọng của đầu ca.", subId: "double_pending", subText: "Xử lý việc tồn đọng hoặc báo quản lý" },
-
-      { id: "mid_table_ready", no: 10, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Chuẩn bị cho bàn ăn", desc: "Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.", subId: "sauce_ready", subText: "Chuẩn bị/kiểm tra nước chấm" },
-      { id: "mid_table_ready", no: 10, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Chuẩn bị cho bàn ăn", desc: "Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.", subId: "cold_towel_ready", subText: "Chuẩn bị/kiểm tra khăn lạnh" },
-      { id: "mid_table_ready", no: 10, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Chuẩn bị cho bàn ăn", desc: "Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.", subId: "pre_drink_ready", subText: "Kiểm tra đồ uống đặt trước" },
-      { id: "mid_table_ready", no: 10, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Chuẩn bị cho bàn ăn", desc: "Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.", subId: "table_extra_ready", subText: "Bổ sung dụng cụ nếu thiếu" },
-
-      { id: "mid_devices_on", no: 11, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Bật các thiết bị cần thiết", desc: "Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.", subId: "light_hall", subText: "Bật đèn sảnh/khu vực phục vụ" },
-      { id: "mid_devices_on", no: 11, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Bật các thiết bị cần thiết", desc: "Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.", subId: "light_decor", subText: "Bật đèn trang trí" },
-      { id: "mid_devices_on", no: 11, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Bật các thiết bị cần thiết", desc: "Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.", subId: "fan_ac", subText: "Bật quạt/máy lạnh phù hợp" },
-      { id: "mid_devices_on", no: 11, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Bật các thiết bị cần thiết", desc: "Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.", subId: "device_check", subText: "Kiểm tra thiết bị hoạt động bình thường" },
-
-      { id: "mid_daily_info", no: 12, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Nắm thông tin", desc: "Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.", subId: "info_reservation", subText: "Nắm bàn đặt mới trong ngày" },
-      { id: "mid_daily_info", no: 12, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Nắm thông tin", desc: "Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.", subId: "info_out_of_stock", subText: "Nắm món hết hàng/ngừng bán" },
-      { id: "mid_daily_info", no: 12, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Nắm thông tin", desc: "Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.", subId: "info_priority", subText: "Nắm món ưu tiên bán" },
-      { id: "mid_daily_info", no: 12, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Nắm thông tin", desc: "Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.", subId: "info_promo", subText: "Nắm chương trình khuyến mãi/ưu đãi" },
-
-      { id: "mid_assignment", no: 13, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Phân công", desc: "Điền tên vào bảng phân công vị trí trực.", subId: "assign_name", subText: "Điền tên vào bảng phân công khu trực" },
-      { id: "mid_assignment", no: 13, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Phân công", desc: "Điền tên vào bảng phân công vị trí trực.", subId: "assign_position", subText: "Nắm rõ vị trí/bàn phụ trách" },
-      { id: "mid_assignment", no: 13, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Phân công", desc: "Điền tên vào bảng phân công vị trí trực.", subId: "assign_support", subText: "Nắm nhân sự hỗ trợ khi đông khách" },
-
-      { id: "mid_uniform", no: 14, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Đảm bảo tác phong", desc: "Đúng đồng phục, đeo bảng tên.", subId: "uniform_ok", subText: "Đúng đồng phục" },
-      { id: "mid_uniform", no: 14, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Đảm bảo tác phong", desc: "Đúng đồng phục, đeo bảng tên.", subId: "name_tag_ok", subText: "Đeo bảng tên" },
-      { id: "mid_uniform", no: 14, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Đảm bảo tác phong", desc: "Đúng đồng phục, đeo bảng tên.", subId: "appearance_ok", subText: "Tác phong gọn gàng, lịch sự" },
-
-      { id: "mid_service_ready", no: 15, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Sẵn sàng phục vụ", desc: "Về đúng khu vực phân công, chuẩn bị đầy đủ để sẵn sàng phục vụ khách.", subId: "area_ready", subText: "Có mặt đúng khu vực phân công" },
-      { id: "mid_service_ready", no: 15, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Sẵn sàng phục vụ", desc: "Về đúng khu vực phân công, chuẩn bị đầy đủ để sẵn sàng phục vụ khách.", subId: "observe_ready", subText: "Quan sát khu vực, sẵn sàng hỗ trợ khách" },
-      { id: "mid_service_ready", no: 15, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Sẵn sàng phục vụ", desc: "Về đúng khu vực phân công, chuẩn bị đầy đủ để sẵn sàng phục vụ khách.", subId: "service_tools_ready", subText: "Chuẩn bị dụng cụ cần thiết để phục vụ nhanh" },
-
+      { id: "mid_double_check", no: 9, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Double-check ca 15h", desc: "Hoàn thành các việc tồn đọng của đầu ca.", subtasks: ["Rà soát vệ sinh khu vực", "Rà soát setup bàn ghế/dụng cụ", "Rà soát bàn đặt trước", "Xử lý việc tồn đọng hoặc báo quản lý"] },
+      { id: "mid_table_ready", no: 10, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Chuẩn bị cho bàn ăn", desc: "Kiểm tra nước chấm, khăn lạnh, đồ uống đặt trước.", subtasks: ["Chuẩn bị/kiểm tra nước chấm", "Chuẩn bị/kiểm tra khăn lạnh", "Kiểm tra đồ uống đặt trước", "Bổ sung dụng cụ nếu thiếu"] },
+      { id: "mid_devices_on", no: 11, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "V. Kiểm tra chéo & Bổ sung", title: "Bật các thiết bị cần thiết", desc: "Bật đèn sảnh, đèn trang trí, quạt/máy lạnh theo nhu cầu vận hành.", subtasks: ["Bật đèn sảnh/khu vực phục vụ", "Bật đèn trang trí", "Bật quạt/máy lạnh phù hợp", "Kiểm tra thiết bị hoạt động bình thường"] },
+      { id: "mid_daily_info", no: 12, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Nắm thông tin", desc: "Bàn đặt mới, sắp xếp/trang trí bàn, món hết hàng/ngừng bán, món ưu tiên bán, chương trình khuyến mãi.", subtasks: ["Nắm bàn đặt mới trong ngày", "Nắm món hết hàng/ngừng bán", "Nắm món ưu tiên bán", "Nắm chương trình khuyến mãi/ưu đãi"] },
+      { id: "mid_assignment", no: 13, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VI. Thông tin và kế hoạch trong ngày", title: "Phân công", desc: "Điền tên vào bảng phân công vị trí trực.", subtasks: ["Điền tên vào bảng phân công khu trực", "Nắm rõ vị trí/bàn phụ trách", "Nắm nhân sự hỗ trợ khi đông khách"] },
+      { id: "mid_uniform", no: 14, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Đảm bảo tác phong", desc: "Đúng đồng phục, đeo bảng tên.", subtasks: ["Đúng đồng phục", "Đeo bảng tên", "Tác phong gọn gàng, lịch sự"] },
+      { id: "mid_service_ready", no: 15, phase: "CHECKLIST ĐẦU CA", shift: "CA 17H: RÀ SOÁT & HOÀN THIỆN", section: "VII. Sẵn sàng phục vụ", title: "Sẵn sàng phục vụ", desc: "Về đúng khu vực phân công, chuẩn bị đầy đủ để sẵn sàng phục vụ khách.", subtasks: ["Có mặt đúng khu vực phân công", "Quan sát khu vực, sẵn sàng hỗ trợ khách", "Chuẩn bị dụng cụ cần thiết để phục vụ nhanh"] },
+      
       // PHASE 3: XUỐNG CA LẦN 1
-      { id: "end1_prepare_next", no: 16, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Thu dọn và chuẩn bị cho ca sau", desc: "Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.", subId: "end1_station_clear", subText: "Cất dọn trạm đồ dùng dự phòng" },
-      { id: "end1_prepare_next", no: 16, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Thu dọn và chuẩn bị cho ca sau", desc: "Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.", subId: "end1_tool_prepare", subText: "Chuẩn bị thêm đồ dùng cho nhóm sau" },
-      { id: "end1_prepare_next", no: 16, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Thu dọn và chuẩn bị cho ca sau", desc: "Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.", subId: "end1_table_chair", subText: "Lau bàn ghế khu vực trống khách" },
-      { id: "end1_prepare_next", no: 16, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Thu dọn và chuẩn bị cho ca sau", desc: "Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.", subId: "end1_support", subText: "Hỗ trợ giảm tải cho nhóm còn lại" },
-
-      { id: "end1_reserved_support", no: 17, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ sắp xếp các bàn đặt trước", desc: "Ưu tiên sắp xếp các khu vực trống khách.", subId: "end1_empty_area", subText: "Ưu tiên xử lý khu vực đã trống khách" },
-      { id: "end1_reserved_support", no: 17, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ sắp xếp các bàn đặt trước", desc: "Ưu tiên sắp xếp các khu vực trống khách.", subId: "end1_next_reserved", subText: "Sắp xếp bàn đặt trước nếu có" },
-      { id: "end1_reserved_support", no: 17, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ sắp xếp các bàn đặt trước", desc: "Ưu tiên sắp xếp các khu vực trống khách.", subId: "end1_move_table", subText: "Đổi bàn/ghế đúng nhu cầu nếu cần" },
-
-      { id: "end1_clean_empty", no: 18, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Vệ sinh", desc: "Quét dọn, lau gầm các bàn trống khách.", subId: "end1_sweep", subText: "Quét dọn khu vực trống khách" },
-      { id: "end1_clean_empty", no: 18, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Vệ sinh", desc: "Quét dọn, lau gầm các bàn trống khách.", subId: "end1_under_table", subText: "Lau gầm bàn/gầm ghế" },
-      { id: "end1_clean_empty", no: 18, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Vệ sinh", desc: "Quét dọn, lau gầm các bàn trống khách.", subId: "end1_small_trash", subText: "Thu gom rác nhỏ trong khu" },
-
-      { id: "end1_handover_support", no: 19, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ bàn giao", desc: "Thông tin các công việc đã xử lý, hỗ trợ kiểm tra đồ dùng.", subId: "end1_work_done", subText: "Thông tin việc đã xử lý" },
-      { id: "end1_handover_support", no: 19, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ bàn giao", desc: "Thông tin các công việc đã xử lý, hỗ trợ kiểm tra đồ dùng.", subId: "end1_tool_check", subText: "Hỗ trợ kiểm tra đồ dùng" },
-      { id: "end1_handover_support", no: 19, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ bàn giao", desc: "Thông tin các công việc đã xử lý, hỗ trợ kiểm tra đồ dùng.", subId: "end1_note_next", subText: "Ghi chú việc còn lại cho nhóm sau" },
-
+      { id: "end1_prepare_next", no: 16, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Thu dọn và chuẩn bị cho ca sau", desc: "Cất dọn các trạm đồ dùng dự phòng, chuẩn bị thêm các đồ dùng và sắp xếp vào tủ/khu vực chuẩn bị, lau bàn ghế khu vực trống khách.", subtasks: ["Cất dọn trạm đồ dùng dự phòng", "Chuẩn bị thêm đồ dùng cho nhóm sau", "Lau bàn ghế khu vực trống khách", "Hỗ trợ giảm tải cho nhóm còn lại"] },
+      { id: "end1_reserved_support", no: 17, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ sắp xếp các bàn đặt trước", desc: "Ưu tiên sắp xếp các khu vực trống khách.", subtasks: ["Ưu tiên xử lý khu vực đã trống khách", "Sắp xếp bàn đặt trước nếu có", "Đổi bàn/ghế đúng nhu cầu nếu cần"] },
+      { id: "end1_clean_empty", no: 18, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Vệ sinh", desc: "Quét dọn, lau gầm các bàn trống khách.", subtasks: ["Quét dọn khu vực trống khách", "Lau gầm bàn/gầm ghế", "Thu gom rác nhỏ trong khu"] },
+      { id: "end1_handover_support", no: 19, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA LẦN 1", section: "VIII. Xuống ca lần 1 (21h - 22h)", title: "Hỗ trợ bàn giao", desc: "Thông tin các công việc đã xử lý, hỗ trợ kiểm tra đồ dùng.", subtasks: ["Thông tin việc đã xử lý", "Hỗ trợ kiểm tra đồ dùng", "Ghi chú việc còn lại cho nhóm sau"] },
+      
       // PHASE 4: XUỐNG CA SAU CÙNG
-      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subId: "final_menu", subText: "Vệ sinh menu" },
-      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subId: "final_ice_bucket", subText: "Vệ sinh xô đá" },
-      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subId: "final_shaker", subText: "Vệ sinh thùng lắc/xẻ" },
-      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subId: "final_setup", subText: "Thu dọn setup và lau mặt ghế còn lại" },
-      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subId: "final_floor", subText: "Quét, lau phần sàn nhà còn lại" },
-      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subId: "final_trash", subText: "Thu gom rác, đổ rác, vệ sinh thùng rác/hót rác" },
-
-      { id: "end_final_area_arrange", no: 21, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Sắp xếp khu trực", desc: "Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.", subId: "final_reserved", subText: "Sắp xếp bàn đặt trước còn lại" },
-      { id: "end_final_area_arrange", no: 21, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Sắp xếp khu trực", desc: "Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.", subId: "final_return_tools", subText: "Gửi trả thiết bị về đúng vị trí" },
-      { id: "end_final_area_arrange", no: 21, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Sắp xếp khu trực", desc: "Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.", subId: "final_fan_light", subText: "Sắp xếp gọn quạt/đèn" },
-      { id: "end_final_area_arrange", no: 21, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Sắp xếp khu trực", desc: "Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.", subId: "final_background", subText: "Sắp xếp khung background/decor đúng vị trí" },
-
-      { id: "end_final_tools", no: 22, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Kiểm tra thiết bị & khu vực", desc: "Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.", subId: "final_awning", subText: "Kéo/đóng mái che, bạt che mưa nếu cần" },
-      { id: "end_final_tools", no: 22, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Kiểm tra thiết bị & khu vực", desc: "Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.", subId: "final_photo", subText: "Quay video/chụp ảnh khu trực" },
-      { id: "end_final_tools", no: 22, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Kiểm tra thiết bị & khu vực", desc: "Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.", subId: "final_power", subText: "Tắt thiết bị điện/đèn chiếu sáng" },
-      { id: "end_final_tools", no: 22, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Kiểm tra thiết bị & khu vực", desc: "Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.", subId: "final_fan_ac_off", subText: "Tắt quạt/máy lạnh khu vực" },
-
-      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subId: "final_damage", subText: "Báo cáo hư hỏng trong ca" },
-      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subId: "final_supply_report", subText: "Báo cáo vật tư cần cấp cho ca sau" },
-      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subId: "final_tool_count", subText: "Báo cáo số lượng đồ dùng nếu cần" },
-      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subId: "final_wash_area", subText: "Tắt điện khu rửa chén" },
-      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subId: "final_wc", subText: "Tắt đèn/máy lạnh nhà vệ sinh" },
-      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subId: "final_clock_out", subText: "Chấm công và ra về" }
+      { id: "end_final_clean", no: 20, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Vệ sinh & Thu dọn", desc: "Vệ sinh menu, xô đá, thùng lắc/xẻ, thu dọn setup và lau mặt ghế còn lại, quét lau phần sàn nhà còn lại, thu gom rác, đổ rác, vệ sinh thùng rác, hót rác.", subtasks: ["Vệ sinh menu", "Vệ sinh xô đá", "Vệ sinh thùng lắc/xẻ", "Thu dọn setup và lau mặt ghế còn lại", "Quét, lau phần sàn nhà còn lại", "Thu gom rác, đổ rác, vệ sinh thùng rác/hót rác"] },
+      { id: "end_final_area_arrange", no: 21, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Sắp xếp khu trực", desc: "Sắp xếp các bàn đặt trước còn lại, gửi trả thiết bị về đúng vị trí, sắp xếp gọn gàng quạt, đèn, khung background.", subtasks: ["Sắp xếp bàn đặt trước còn lại", "Gửi trả thiết bị về đúng vị trí", "Sắp xếp gọn quạt/đèn", "Sắp xếp khung background/decor đúng vị trí"] },
+      { id: "end_final_tools", no: 22, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Kiểm tra thiết bị & khu vực", desc: "Kiểm tra kéo/đóng mái che, bạt che mưa, quay video/chụp ảnh khu trực, tắt thiết bị điện/đèn chiếu sáng/quạt/máy lạnh.", subtasks: ["Kéo/đóng mái che, bạt che mưa nếu cần", "Quay video/chụp ảnh khu trực", "Tắt thiết bị điện/đèn chiếu sáng", "Tắt quạt/máy lạnh khu vực"] },
+      { id: "end_final_report", no: 23, phase: "CHECKLIST CUỐI CA", shift: "XUỐNG CA SAU CÙNG", section: "IX. Xuống ca sau cùng (sau 23h hoặc hết khách)", title: "Báo cáo và đóng ca", desc: "Báo cáo hư hỏng trong ca, báo cáo số lượng vật tư cần cấp cho ca sau, báo cáo số lượng đồ dùng, tắt điện khu rửa chén, tắt đèn/máy lạnh nhà vệ sinh, chấm công và ra về.", subtasks: ["Báo cáo hư hỏng trong ca", "Báo cáo vật tư cần cấp cho ca sau", "Báo cáo số lượng đồ dùng nếu cần", "Tắt điện khu rửa chén", "Tắt đèn/máy lạnh nhà vệ sinh", "Chấm công và ra về"] }
     ];
 
-    SheetService.setSheetDataFromObjects(CONFIG_SHEET, CONFIG_HEADERS, defaults);
+    var mappedDefaults = defaults.map(function(item) {
+      return {
+        "Mã Hạng Mục": item.id,
+        "STT": item.no,
+        "Phân Loại": item.phase,
+        "Ca Làm Việc": item.shift,
+        "Phần": item.section,
+        "Tiêu Đề": item.title,
+        "Mô Tả": item.desc,
+        "Công Việc Con": (item.subtasks || []).join("\n")
+      };
+    });
+
+    SheetService.setSheetDataFromObjects(CONFIG_SHEET, CONFIG_HEADERS, mappedDefaults);
     
     // Auto format sheet width and heights
     var ss = SheetService.getSpreadsheet();
@@ -156,8 +99,7 @@ var ChecklistService = (function() {
     configSheet.setColumnWidth(5, 200); // Section
     configSheet.setColumnWidth(6, 220); // Title
     configSheet.setColumnWidth(7, 300); // Description
-    configSheet.setColumnWidth(8, 140); // Sub ID
-    configSheet.setColumnWidth(9, 260); // Sub Text
+    configSheet.setColumnWidth(8, 400); // Công Việc Con
   }
 
   /**
@@ -187,8 +129,7 @@ var ChecklistService = (function() {
       var stt = Number(row["STT"]) || 0;
       var title = row["Tiêu Đề"] || "";
       var desc = row["Mô Tả"] || "";
-      var subId = row["Mã Việc Con"] || "";
-      var subText = row["Nội Dung Việc Con"] || "";
+      var subtasksText = row["Công Việc Con"] || "";
       
       var groupKey = phase + "||" + shift + "||" + section;
       if (!groupsMap[groupKey]) {
@@ -212,10 +153,16 @@ var ChecklistService = (function() {
         groupsMap[groupKey].items.push(itemsMap[itemId]);
       }
       
-      if (subId && subText) {
-        itemsMap[itemId].subitems.push({
-          id: subId,
-          text: subText
+      if (subtasksText && subtasksText.toString().trim()) {
+        var lines = subtasksText.toString().split("\n");
+        lines.forEach(function(line) {
+          var cleanLine = line.trim();
+          if (cleanLine) {
+            itemsMap[itemId].subitems.push({
+              id: safeId(cleanLine),
+              text: cleanLine
+            });
+          }
         });
       }
     });
@@ -246,10 +193,6 @@ var ChecklistService = (function() {
     return groups;
   }
 
-  /**
-   * Loads all states saved for a given date in YYYY-MM-DD format.
-   * Returns an object mapping area names to their saved states.
-   */
   function getChecklistStates(dateStr) {
     var ss = SheetService.getSpreadsheet();
     var sheet = SheetService.getOrCreateSheet(STATE_SHEET, STATE_HEADERS);
