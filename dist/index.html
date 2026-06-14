@@ -1577,6 +1577,7 @@
         </div>
       </div>
       <div class="toolbar">
+        <button class="btn" id="configApiBtn">⚙️ Cấu hình API</button>
         <button class="btn" id="helpBtn">📘 Hướng dẫn</button>
         <button class="btn" id="printBtn">🖨️ In checklist</button>
         <button class="btn" id="exportBtn">⬇️ Xuất JSON</button>
@@ -2172,6 +2173,17 @@
     $('#savePendingBtn').addEventListener('click', () => syncStateToServer(true));
     $('#syncServerBtn').addEventListener('click', () => syncStateToServer(true));
     
+    $('#configApiBtn').addEventListener('click', async () => {
+      const newUrl = prompt('Nhập địa chỉ Google Apps Script Web App URL:', gasApiUrl);
+      if (newUrl !== null) {
+        const cleanUrl = newUrl.trim();
+        localStorage.setItem(API_URL_KEY, cleanUrl);
+        gasApiUrl = cleanUrl;
+        toast('Đã cập nhật API URL. Đang tải dữ liệu từ Google Sheets...', 'success');
+        await syncInitData();
+      }
+    });
+
     // Guide modal
     $('#helpBtn').addEventListener('click', openGuide);
     $('#quickGuideBtn').addEventListener('click', openGuide);
